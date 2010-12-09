@@ -1,5 +1,7 @@
 package ch.hszt.mdp.chatplus.logic.concrete;
 
+import java.io.Serializable;
+
 import ch.hszt.mdp.chatplus.logic.contract.context.IClientContext;
 import ch.hszt.mdp.chatplus.logic.contract.context.IServerContext;
 import ch.hszt.mdp.chatplus.logic.contract.message.IClientMessage;
@@ -15,15 +17,33 @@ import ch.hszt.mdp.chatplus.logic.contract.peer.IServerPeer;
  * @author sfrick
  *
  */
-public class BoardMessage implements IServerMessage, IClientMessage {
+public class BoardMessage implements IServerMessage, IClientMessage, Serializable {
 	
 	public String message;
 	public String sender;
 	public String boardName;
-	@Override
 	
+	@Override	
 	public IServerPeer getServerSource() {
 		return null;
+	}
+	public String getMessage() {
+		return message;
+	}
+	public void setMessage(String message) {
+		this.message = message;
+	}
+	public String getSender() {
+		return sender;
+	}
+	public void setSender(String sender) {
+		this.sender = sender;
+	}
+	public String getBoardName() {
+		return boardName;
+	}
+	public void setBoardName(String boardName) {
+		this.boardName = boardName;
 	}
 	@Override
 	public void process(IClientContext context) {
