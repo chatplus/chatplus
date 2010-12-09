@@ -1,11 +1,11 @@
-package ch.hszt.mdp.chatplus.logic.concrete;
+package main.ch.hszt.mdp.chatplus.logic.concrete;
 
-import ch.hszt.mdp.chatplus.logic.contract.context.IClientContext;
-import ch.hszt.mdp.chatplus.logic.contract.context.IServerContext;
-import ch.hszt.mdp.chatplus.logic.contract.message.IClientMessage;
-import ch.hszt.mdp.chatplus.logic.contract.message.IServerMessage;
-import ch.hszt.mdp.chatplus.logic.contract.peer.IClientPeer;
-import ch.hszt.mdp.chatplus.logic.contract.peer.IServerPeer;
+import main.ch.hszt.mdp.chatplus.logic.contract.context.IClientContext;
+import main.ch.hszt.mdp.chatplus.logic.contract.context.IServerContext;
+import main.ch.hszt.mdp.chatplus.logic.contract.message.IClientMessage;
+import main.ch.hszt.mdp.chatplus.logic.contract.message.IServerMessage;
+import main.ch.hszt.mdp.chatplus.logic.contract.peer.IClientPeer;
+import main.ch.hszt.mdp.chatplus.logic.contract.peer.IServerPeer;
 
 /***
  * A demo implementation of a message

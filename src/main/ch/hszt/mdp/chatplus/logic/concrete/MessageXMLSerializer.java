@@ -1,4 +1,4 @@
-package ch.hszt.mdp.chatplus.logic.concrete;
+package main.ch.hszt.mdp.chatplus.logic.concrete;
 
 public class MessageXMLSerializer {
 

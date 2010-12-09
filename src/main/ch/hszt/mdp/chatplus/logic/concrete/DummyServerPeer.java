@@ -1,7 +1,7 @@
-package ch.hszt.mdp.chatplus.logic.concrete;
+package main.ch.hszt.mdp.chatplus.logic.concrete;
 
-import ch.hszt.mdp.chatplus.logic.contract.message.IClientMessage;
-import ch.hszt.mdp.chatplus.logic.contract.peer.IServerPeer;
+import main.ch.hszt.mdp.chatplus.logic.contract.message.IClientMessage;
+import main.ch.hszt.mdp.chatplus.logic.contract.peer.IServerPeer;
 
 /***
  * A demo implementation of the IServerPeer behaviour

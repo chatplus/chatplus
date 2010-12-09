@@ -1,6 +1,6 @@
-package ch.hszt.mdp.chatplus.logic.contract.peer;
+package main.ch.hszt.mdp.chatplus.logic.contract.peer;
 
-import ch.hszt.mdp.chatplus.logic.contract.message.IServerMessage;
+import main.ch.hszt.mdp.chatplus.logic.contract.message.IServerMessage;
 
 /***
  * Simple interface for the communication towards the server
