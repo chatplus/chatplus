@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<java version="1.6.0_22" class="java.beans.XMLDecoder"> 
+ <object class="ch.hszt.mdp.chatplus.logic.concrete.BoardMessage"> 
+  <void property="boardName"> 
+   <string>TechTalk</string> 
+  </void> 
+  <void property="message"> 
+   <string>Hallo</string> 
+  </void> 
+  <void property="sender"> 
+   <string>client1</string> 
+  </void> 
+ </object> 
+</java> 
