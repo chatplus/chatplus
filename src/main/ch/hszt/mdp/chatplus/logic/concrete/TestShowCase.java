@@ -1,8 +1,9 @@
-package main.ch.hszt.mdp.chatplus.logic.concrete;
+package ch.hszt.mdp.chatplus.logic.concrete;
 
 import java.util.ArrayList;
 
-import main.ch.hszt.mdp.chatplus.logic.contract.peer.IClientPeer;
+import ch.hszt.mdp.chatplus.logic.contract.peer.IClientPeer;
+
 
 /***
  * A simple showcase to demonstrate base functionality of this application

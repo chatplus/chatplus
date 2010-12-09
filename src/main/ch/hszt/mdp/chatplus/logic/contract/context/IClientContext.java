@@ -1,4 +1,4 @@
-package main.ch.hszt.mdp.chatplus.logic.contract.context;
+package ch.hszt.mdp.chatplus.logic.contract.context;
 
 /***
  * This interface describes the functionality a client must provide.

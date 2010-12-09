@@ -1,10 +1,11 @@
-package main.ch.hszt.mdp.chatplus.logic.concrete;
+package ch.hszt.mdp.chatplus.logic.concrete;
 
 import java.util.ArrayList;
 
-import main.ch.hszt.mdp.chatplus.logic.contract.context.IClientContext;
-import main.ch.hszt.mdp.chatplus.logic.contract.message.IServerMessage;
-import main.ch.hszt.mdp.chatplus.logic.contract.peer.IServerPeer;
+import ch.hszt.mdp.chatplus.logic.contract.context.IClientContext;
+import ch.hszt.mdp.chatplus.logic.contract.message.IServerMessage;
+import ch.hszt.mdp.chatplus.logic.contract.peer.IServerPeer;
+
 
 /***
  * A demo chatplus client to test the abstract communication behaviour

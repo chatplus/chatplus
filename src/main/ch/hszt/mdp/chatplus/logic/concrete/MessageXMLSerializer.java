@@ -1,4 +1,4 @@
-package main.ch.hszt.mdp.chatplus.logic.concrete;
+package ch.hszt.mdp.chatplus.logic.concrete;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;

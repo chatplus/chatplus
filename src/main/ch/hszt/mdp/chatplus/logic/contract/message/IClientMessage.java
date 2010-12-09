@@ -1,7 +1,7 @@
-package main.ch.hszt.mdp.chatplus.logic.contract.message;
+package ch.hszt.mdp.chatplus.logic.contract.message;
 
-import main.ch.hszt.mdp.chatplus.logic.contract.context.IServerContext;
-import main.ch.hszt.mdp.chatplus.logic.contract.peer.IClientPeer;
+import ch.hszt.mdp.chatplus.logic.contract.context.IServerContext;
+import ch.hszt.mdp.chatplus.logic.contract.peer.IClientPeer;
 
 /***
  * Describes a message that must be processed in an IServerContext

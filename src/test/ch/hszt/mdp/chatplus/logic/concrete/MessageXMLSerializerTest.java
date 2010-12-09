@@ -1,10 +1,14 @@
-package test.ch.hszt.mdp.chatplus.logic.concrete;
+package ch.hszt.mdp.chatplus.logic.concrete;
+
 
 import org.custommonkey.xmlunit.Diff;
 import org.junit.Before;
 import org.junit.Test;
 import  static org.junit.Assert.*;
 import org.xml.sax.InputSource;
+
+import ch.hszt.mdp.chatplus.logic.concrete.BoardMessage;
+import ch.hszt.mdp.chatplus.logic.concrete.MessageXMLSerializer;
 
 
 
