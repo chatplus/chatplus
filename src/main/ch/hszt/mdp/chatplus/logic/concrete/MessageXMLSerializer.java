@@ -10,6 +10,14 @@ import java.io.IOException;
 import java.beans.XMLDecoder;
 import java.beans.XMLEncoder;
 
+/**
+ * 
+ * This is a helper-class that takes an Object
+ * and serializes it to an xml-file.
+ * 
+ * @author pmurbach
+ *
+ */
 public class MessageXMLSerializer {
 	
 	public void write(Object o, String filename){
@@ -25,6 +33,7 @@ public class MessageXMLSerializer {
 		}
 	}
 	
+
 	public Object read(String filename){
 		try{
 			XMLDecoder decoder = new XMLDecoder(
