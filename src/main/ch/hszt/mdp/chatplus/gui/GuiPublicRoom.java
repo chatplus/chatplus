@@ -1,4 +1,4 @@
-package ch.hszt.mdp.chatplus.logic.concrete;
+package ch.hszt.mdp.chatplus.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -16,6 +16,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.ScrollPaneConstants;
 
+import ch.hszt.mdp.chatplus.logic.concrete.SimpleMessage;
 import ch.hszt.mdp.chatplus.logic.contract.context.IClientContext;
 import ch.hszt.mdp.chatplus.logic.contract.peer.IServerPeer;
 

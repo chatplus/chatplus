@@ -1,4 +1,4 @@
-package ch.hszt.mdp.chatplus.logic.concrete;
+package ch.hszt.mdp.chatplus.gui;
 //package ch.hszt.mdp.chatplus.logic.concrete;
 //
 //import java.awt.event.ActionEvent;
