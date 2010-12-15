@@ -1,5 +1,7 @@
 package ch.hszt.mdp.chatplus.logic.concrete;
 
+import java.beans.XMLEncoder;
+import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
