@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import ch.hszt.mdp.chatplus.logic.contract.peer.IClientPeer;
 
-
 /***
  * A simple showcase to demonstrate base functionality of this application
  * @author sfrick
@@ -41,7 +40,7 @@ public class TestShowCase {
 		currentClients.add(clientPeer3);
 		server.clientBoards.put("TechTalk", currentClients);
 		
-		client1.sendNewBoardMessage("TechTalk", "client1", "Hello World!");
+		client1.sendNewBoardMessage("client1", "Hello World!");
 		
 		server.Run();
 		client1.Run();

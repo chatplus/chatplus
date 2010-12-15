@@ -11,7 +11,10 @@ public interface IClientContext {
 	/***
 	 * Handles a boardchatmessage.
 	 */
-	public void processBoardChatMessage(String boardName, String sender, String message);
+	public void processBoardChatMessage(String sender, String message);
 	
 	// More functionality can be added here
+	
+	public void displayChatMessage(String sender, String message);
+	
 }
