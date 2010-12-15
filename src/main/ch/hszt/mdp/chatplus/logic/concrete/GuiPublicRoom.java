@@ -29,7 +29,7 @@ public class GuiPublicRoom implements ActionListener, IClientContext {
 
 	JTextArea readMessage;
 	JTextArea writeMessage;
-	String[] userNames = { "Pascal                        ", "Sven", "Patrik",
+	String[] userNames = { "Pascal", "Sven", "Patrik",
 			"Pascal", "Corinne" };
 	JList userList = new JList(userNames);
 	IServerPeer server;

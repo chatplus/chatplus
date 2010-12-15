@@ -1,7 +1,5 @@
 package ch.hszt.mdp.chatplus.logic.contract.message;
 
-import java.io.Serializable;
-
 import ch.hszt.mdp.chatplus.logic.contract.context.IServerContext;
 import ch.hszt.mdp.chatplus.logic.contract.peer.IClientPeer;
 

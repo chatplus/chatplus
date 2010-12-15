@@ -1,11 +1,5 @@
 package ch.hszt.mdp.chatplus.logic.concrete;
 
-import java.beans.XMLEncoder;
-import java.io.BufferedOutputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.Serializable;
-
 public class Helper {
 	/*
 	public static Object serialize(Object obj)
