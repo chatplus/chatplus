@@ -1,8 +1,13 @@
 package ch.hszt.mdp.chatplus.gui;
 
+import java.awt.Dimension;
+import java.awt.DisplayMode;
+import java.awt.Insets;
+import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.net.UnknownHostException;
 
+import javax.print.attribute.standard.JobMessageFromOperator;
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -17,8 +22,10 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
 import javax.swing.LayoutStyle;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.WindowConstants;
 
+import ch.hszt.mdp.chatplus.logic.concrete.SimpleMessage;
 import ch.hszt.mdp.chatplus.logic.concrete.TcpServerPeer;
 import ch.hszt.mdp.chatplus.logic.contract.context.IClientContext;
 
@@ -47,8 +54,9 @@ public class ChatWindow extends JFrame implements IClientContext {
 	private String serverIP;
 	private Integer serverPort;
 	private String username;
+
 	// End of variables declaration
-	
+
 	/** Creates new form ChatWindow */
 	public ChatWindow() {
 		initComponents();
@@ -65,8 +73,10 @@ public class ChatWindow extends JFrame implements IClientContext {
 		jPopupMenu1 = new JPopupMenu();
 		messageDisplayScroll = new JScrollPane();
 		messageDisplay = new JTextArea();
+		messageDisplay.setMargin(new Insets(10, 10, 10, 10));
 		messageWritingScroll = new JScrollPane();
 		messageWriting = new JTextArea();
+		messageWriting.setMargin(new Insets(10, 10, 10, 10));
 		messageWritingLabel = new JLabel();
 		userListScroll = new JScrollPane();
 		userList = new JList();
@@ -78,16 +88,28 @@ public class ChatWindow extends JFrame implements IClientContext {
 		exitItem = new JMenuItem();
 
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+		setSize(670, 570);
+		setLocationRelativeTo(null);
 
 		messageDisplay.setColumns(20);
 		messageDisplay.setRows(5);
 		messageDisplay.setEnabled(false);
+		messageDisplay.setEditable(false);
+		messageDisplay.setLineWrap(true);
 		messageDisplayScroll.setViewportView(messageDisplay);
+		messageDisplayScroll
+				.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		messageDisplayScroll
+				.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
 		messageWriting.setColumns(20);
 		messageWriting.setRows(5);
 		messageWriting.setEnabled(false);
 		messageWritingScroll.setViewportView(messageWriting);
+		messageWritingScroll
+				.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		messageWritingScroll
+				.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
 		messageWritingLabel.setText("Enter your message here");
 
@@ -246,39 +268,19 @@ public class ChatWindow extends JFrame implements IClientContext {
 	}// </editor-fold>
 
 	private void sendButtonActionPerformed(java.awt.event.ActionEvent evt) {
-		// TODO add your handling code here:
+		sendMessage(username, messageWriting.getText());
 	}
 
 	private void connectItemActionPerformed(java.awt.event.ActionEvent evt) {
-		java.awt.EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				final ConnectionDialog dialog = new ConnectionDialog(new JFrame(), true);
-				dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-					public void windowClosing(java.awt.event.WindowEvent e) {
-						
-						//retreive all the user input from the connection dialog
-						String username = dialog.getUsername();
-						String serverIP = dialog.getServerIP();
-						Integer serverPort = dialog.getServerPort();
-						
-						//connect to the server
-						if(connectToServer(serverIP, serverPort)) {
-							enableElements();
-						}
-						
-					}
-				});
-				dialog.setVisible(true);
-			}
-		});
+		displayConnectionDialog();
 	}
 
 	private void disconnectItemActionPerformed(java.awt.event.ActionEvent evt) {
-		// TODO add your handling code here:
+		disconnectFromServer();
 	}
 
 	private void exitItemActionPerformed(java.awt.event.ActionEvent evt) {
-		// TODO add your handling code here:
+		System.exit(0);
 	}
 
 	/**
@@ -288,107 +290,173 @@ public class ChatWindow extends JFrame implements IClientContext {
 	public static void main(String args[]) {
 		java.awt.EventQueue.invokeLater(new Runnable() {
 			public void run() {
-				JFrame mainWindow = new ChatWindow();
-
-				new ChatWindow().setVisible(true);
+				ChatWindow mainWindow = new ChatWindow();
+				mainWindow.setVisible(true);
+				mainWindow.displayConnectionDialog();
 			}
 		});
 	}
-	
-	
+
 	/**
 	 * Disable elements
 	 * 
 	 * Disables all interface elements
-	 * @return void 
+	 * 
+	 * @return void
 	 */
 
 	private final void disableElements() {
+		connectItem.setEnabled(true);
 		disconnectItem.setEnabled(false);
 		messageDisplay.setEnabled(false);
 		messageWriting.setEnabled(false);
 		sendButton.setEnabled(false);
 		userList.setEnabled(false);
 	}
-	
-	
+
 	/**
 	 * Enable elements
 	 * 
 	 * Enables all interface elements
-	 * @return void 
+	 * 
+	 * @return void
 	 */
-	
+
 	private final void enableElements() {
+		connectItem.setEnabled(false);
 		disconnectItem.setEnabled(true);
 		messageDisplay.setEnabled(true);
 		messageWriting.setEnabled(true);
 		sendButton.setEnabled(true);
 		userList.setEnabled(true);
 	}
-	
-	
+
+	/**
+	 * Display connection dialog
+	 * 
+	 * Open the connection dialog
+	 * 
+	 * @return void
+	 */
+
+	public void displayConnectionDialog() {
+
+		java.awt.EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				final ConnectionDialog dialog = new ConnectionDialog(
+						new JFrame(), true);
+
+				dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+					public void windowClosed(WindowEvent e) {
+
+						// retreive all the user input from the connection
+						// dialog
+						username = dialog.getUsername();
+						serverIP = dialog.getServerIP();
+						serverPort = dialog.getServerPort();
+
+						// connect to the server
+						if (connectToServer(serverIP, serverPort)) {
+							enableElements();
+						} else {
+							System.out.println("not connected");
+						}
+
+					}
+
+				});
+				dialog.setVisible(true);
+			}
+		});
+
+	}
+
 	/**
 	 * Connect to the server
 	 * 
 	 * Establish the connection between the client and the server
-	 * @param	ip
-	 * @param	port
-	 * @return	void 
+	 * 
+	 * @param ip
+	 * @param port
+	 * @return void
 	 */
-	
+
 	private boolean connectToServer(String ip, Integer port) {
 
-		//init the server peer
+		// init the server peer
 		serverPeer = new TcpServerPeer();
 		serverPeer.setServerIP(ip);
 		serverPeer.setServerPort(port);
 		serverPeer.setContext(this);
-		
+
 		try {
-			//init the server peer. will throw various exceptions if the connection failed
+			// init the server peer. will throw various exceptions if the
+			// connection failed
 			serverPeer.Init();
 			serverPeer.Start();
-			
-			//store the server ip and port for later usage
+
+			// store the server ip and port for later usage
 			serverIP = ip;
 			serverPort = port;
-			
+
 			return true;
 		} catch (UnknownHostException e) {
 			JOptionPane.showMessageDialog(this, "Unknown host");
 			return false;
 		} catch (IOException e) {
-			JOptionPane.showMessageDialog(this, "Could not connect to the server");
+			JOptionPane.showMessageDialog(this,
+					"Could not connect to the server");
 			return false;
 		}
-		
+
 	}
-	
-	
+
 	/**
 	 * Disconnect from the server
 	 * 
 	 * Close the connection to the server
-	 * @return	void 
+	 * 
+	 * @return void
 	 */
-	
+
 	private void disconnectFromServer() {
 		serverPeer.Stop();
+		messageWriting.setText("");
+		messageDisplay.setText("");
+		disableElements();
 	}
 
-	
+	/**
+	 * Send message
+	 * 
+	 * Send a message to the server
+	 * 
+	 * @param sender
+	 * @param message
+	 * @return void
+	 */
+
+	private final void sendMessage(String sender, String message) {
+		// add the message to the queue
+		SimpleMessage msg = new SimpleMessage();
+		msg.setMessage(message);
+		msg.setSender(sender);
+		serverPeer.send(msg);
+
+		messageWriting.setText("");
+	}
+
 	/**
 	 * Display chat message
 	 * 
 	 * Display a message which was sent by the server
-	 * @return	void 
+	 * 
+	 * @return void
 	 */
-	
+
 	@Override
 	public void displayChatMessage(String sender, String message) {
 		messageDisplay.append(sender + " says:\t" + message + "\n");
 	}
-	
 
 }

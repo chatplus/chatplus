@@ -1,5 +1,9 @@
 package ch.hszt.mdp.chatplus.gui;
 
+import java.awt.Dimension;
+import java.awt.Toolkit;
+import java.awt.event.WindowEvent;
+
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -24,9 +28,9 @@ public class ConnectionDialog extends JDialog {
 	private JLabel serverPortLabel;
 	private JTextField usernameField;
 	private JLabel usernameLabel;
+
 	// End of variables declaration//GEN-END:variables
-	
-	
+
 	/** Creates new form LoginForm */
 	public ConnectionDialog(java.awt.Frame parent, boolean modal) {
 		super(parent, modal);
@@ -52,7 +56,10 @@ public class ConnectionDialog extends JDialog {
 
 		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		setTitle("Login details");
-		setAlwaysOnTop(true);
+		setModal(true);
+		setResizable(false);
+		setSize(400, 182);
+		setLocationRelativeTo(null);
 
 		serverIPLabel.setText("Server IP:");
 		serverPortLabel.setText("Server Port:");
@@ -146,7 +153,7 @@ public class ConnectionDialog extends JDialog {
 	}
 
 	private void connectButtonActionPerformed(java.awt.event.ActionEvent evt) {
-		this.dispose();
+		dispose();
 	}
 
 	/**
@@ -167,12 +174,11 @@ public class ConnectionDialog extends JDialog {
 			}
 		});
 	}
-	
-	
+
 	public String getServerIP() {
 		return serverIPField.getText();
 	}
-	
+
 	public Integer getServerPort() {
 		return Integer.parseInt(serverPortField.getText());
 	}

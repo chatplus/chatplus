@@ -1,20 +1,14 @@
 package ch.hszt.mdp.chatplus.logic.concrete;
 
-import java.beans.XMLDecoder;
-import java.beans.XMLEncoder;
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.LinkedList;
 import java.util.Queue;
 
 import ch.hszt.mdp.chatplus.logic.contract.context.IClientContext;
-import ch.hszt.mdp.chatplus.logic.contract.context.IServerContext;
 import ch.hszt.mdp.chatplus.logic.contract.message.IClientMessage;
 import ch.hszt.mdp.chatplus.logic.contract.message.IServerMessage;
 import ch.hszt.mdp.chatplus.logic.contract.peer.IServerPeer;
@@ -35,13 +29,12 @@ public class TcpServerPeer implements IServerPeer {
 
 		@Override
 		public void run() {
-			while(!isInterrupted)
-			{
+			while (!isInterrupted) {
 				ObjectReceiver objRx = new ObjectReceiver(stream);
 				try {
-					((IServerMessage)objRx.receive()).process(context);
+					((IServerMessage) objRx.receive()).process(context);
 				} catch (IOException e) {
-					e.printStackTrace();
+
 				}
 			}
 		}
@@ -70,7 +63,7 @@ public class TcpServerPeer implements IServerPeer {
 					while (msg != null) {
 						System.out.println("Msg != null.");
 						try {
-							
+
 							ObjectSender sender = new ObjectSender(stream);
 							sender.send(msg);
 
@@ -140,7 +133,7 @@ public class TcpServerPeer implements IServerPeer {
 
 	public void Stop() {
 		isInterrupted = true;
-		lock.notify();
+		// lock.notify();
 	}
 
 	public void setStream(InputStream stream) {

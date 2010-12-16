@@ -44,7 +44,7 @@ public class ChatPlusServer implements IServerContext, Runnable {
 		msg.setSender(sender);
 		msg.setMessage(message);
 		synchronized (lock) {
-			for(IClientPeer peer : threadSafeMessageQueue)
+			for (IClientPeer peer : threadSafeMessageQueue)
 				peer.send(msg);
 		}
 	}
@@ -72,7 +72,7 @@ public class ChatPlusServer implements IServerContext, Runnable {
 			}
 		}
 	}
-	
+
 	public static void main(String[] args) throws IOException {
 		ChatPlusServer server = new ChatPlusServer(9999);
 		Thread serverThread = new Thread(server);

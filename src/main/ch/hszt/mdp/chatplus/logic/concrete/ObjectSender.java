@@ -9,18 +9,17 @@ import java.io.OutputStream;
 public class ObjectSender {
 
 	private OutputStream output;
-	
+
 	public ObjectSender(OutputStream output) {
 		this.output = output;
 	}
-	
-	public void send(Object obj) throws IOException
-	{					
+
+	public void send(Object obj) throws IOException {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		XMLEncoder encoder = new XMLEncoder(baos);		
-		encoder.writeObject(obj);	
+		XMLEncoder encoder = new XMLEncoder(baos);
+		encoder.writeObject(obj);
 		encoder.close();
-		
+
 		byte[] data = baos.toByteArray();
 		int dataLength = data.length;
 		DataOutputStream stream = new DataOutputStream(output);
