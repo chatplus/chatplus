@@ -2,6 +2,7 @@ package ch.hszt.mdp.chatplus.logic.concrete;
 
 import java.beans.XMLEncoder;
 import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
@@ -22,8 +23,10 @@ public class ObjectSender {
 		
 		byte[] data = baos.toByteArray();
 		int dataLength = data.length;
-		output.write(dataLength);
-		output.write(data);
-		output.flush();
+		DataOutputStream stream = new DataOutputStream(output);
+		System.out.println(dataLength);
+		stream.writeInt(dataLength);
+		stream.write(data);
+		stream.flush();
 	}
 }

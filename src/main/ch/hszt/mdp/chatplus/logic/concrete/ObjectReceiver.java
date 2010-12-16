@@ -2,6 +2,7 @@ package ch.hszt.mdp.chatplus.logic.concrete;
 
 import java.beans.XMLDecoder;
 import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -15,14 +16,16 @@ public class ObjectReceiver {
 
 	public Object receive() throws IOException
 	{
-		int dataLength = input.read();
+		DataInputStream stream = new DataInputStream(input);
+		int dataLength = stream.readInt();
 		byte[] data = new byte[dataLength];
-		input.read(data,0,dataLength);
+		stream.read(data);
 		
 		ByteArrayInputStream bais = new ByteArrayInputStream(data);
 		
 		XMLDecoder decoder = new XMLDecoder(bais);
 		Object obj = decoder.readObject();		
+		bais.close();
 		return obj;
 	}
 }

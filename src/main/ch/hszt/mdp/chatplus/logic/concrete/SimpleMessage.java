@@ -39,7 +39,7 @@ public class SimpleMessage implements IClientMessage, IServerMessage {
 
 	@Override
 	public void process(IServerContext context) {
-		// TODO Auto-generated method stub
+		context.publishSimpleMessage(sender, message);
 		
 	}
 
@@ -51,8 +51,7 @@ public class SimpleMessage implements IClientMessage, IServerMessage {
 
 	@Override
 	public void process(IClientContext context) {
-		// TODO Auto-generated method stub
-		
+		context.displayChatMessage(sender, message);
 	}
 
 	@Override
