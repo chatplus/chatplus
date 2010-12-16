@@ -16,7 +16,7 @@ public class ClientTester implements IClientContext{
 		 
 		 TcpServerPeer peer = new TcpServerPeer();
 		 peer.setContext((new ClientTester()));
-		 peer.setServerIP("192.168.0.55");
+		 peer.setServerIP("192.168.1.55");
 		 peer.setServerPort(9999);
 		 peer.Init();
 		 peer.Start();
