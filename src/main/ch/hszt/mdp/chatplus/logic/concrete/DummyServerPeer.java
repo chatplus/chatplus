@@ -8,7 +8,7 @@ import ch.hszt.mdp.chatplus.logic.contract.peer.IServerPeer;
  * A concrete IServerPeer will have to implement the network i/o towards the client
  * @author sfrick
  *
- */
+ *//*
 public class DummyServerPeer implements IServerPeer{
 
 	public ChatPlusServer server;
@@ -24,3 +24,4 @@ public class DummyServerPeer implements IServerPeer{
 	}
 
 }
+*/

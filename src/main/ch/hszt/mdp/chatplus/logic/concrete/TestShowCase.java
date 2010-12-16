@@ -8,7 +8,7 @@ import ch.hszt.mdp.chatplus.logic.contract.peer.IClientPeer;
  * A simple showcase to demonstrate base functionality of this application
  * @author sfrick
  *
- */
+ *//*
 public class TestShowCase {
 
 	public static void main(String[] args) {
@@ -50,3 +50,4 @@ public class TestShowCase {
 	}
 
 }
+*/

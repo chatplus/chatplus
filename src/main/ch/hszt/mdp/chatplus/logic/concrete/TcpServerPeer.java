@@ -1,18 +1,97 @@
 package ch.hszt.mdp.chatplus.logic.concrete;
 
+import java.beans.XMLDecoder;
 import java.beans.XMLEncoder;
+import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.LinkedList;
 import java.util.Queue;
 
+import ch.hszt.mdp.chatplus.logic.contract.context.IClientContext;
+import ch.hszt.mdp.chatplus.logic.contract.context.IServerContext;
 import ch.hszt.mdp.chatplus.logic.contract.message.IClientMessage;
+import ch.hszt.mdp.chatplus.logic.contract.message.IServerMessage;
 import ch.hszt.mdp.chatplus.logic.contract.peer.IServerPeer;
 
-public class TcpServerPeer implements IServerPeer, Runnable {
+public class TcpServerPeer implements IServerPeer {
 
+	private InputStream stream;
+	private IClientContext context;
+	
+	private class ServerRx implements Runnable
+	{
+		private InputStream stream;
+		private IClientContext context;
+		
+		public ServerRx(IClientContext context, InputStream stream) {
+			this.context = context;
+			this.stream = stream;
+		}
+		
+		@Override
+		public void run() {
+			while(!isInterrupted)
+			{
+				XMLDecoder decoder = new XMLDecoder(
+					    new BufferedInputStream(stream));
+					  
+				Object obj = decoder.readObject();					  
+				((IServerMessage)obj).process(context);
+			}
+		}
+		
+	}
+	
+	private class ServerTx implements Runnable
+	{
+		private OutputStream stream;
+
+		public ServerTx(OutputStream stream) {
+			this.stream = stream;
+		}
+		@Override
+		public void run() {
+
+			System.out.println("Starting.");
+			while (!isInterrupted) {
+				System.out.println("Looping.");
+				IClientMessage msg;
+
+				synchronized (lock) {
+					System.out.println("Locked.");
+					msg = threadSafeMessageQueue.poll();
+
+					while (msg != null) {
+						System.out.println("Msg != null.");
+						try {
+							XMLEncoder encoder = new XMLEncoder(
+									new BufferedOutputStream(server
+											.getOutputStream()));
+							encoder.writeObject(msg);
+							encoder.close();
+
+							msg = threadSafeMessageQueue.poll();
+						} catch (Exception ex) {
+							System.out.println("Ex:" + ex.getMessage());
+						}
+					}
+
+					try {
+						System.out.println("Waiting");
+						lock.wait();
+					} catch (InterruptedException e) {
+					}
+				}
+			}
+			System.out.println("Dying");
+		}
+		
+	}
 	private String serverIP = "";
 	private int serverPort;
 
@@ -56,79 +135,19 @@ public class TcpServerPeer implements IServerPeer, Runnable {
 		lock.notify();
 	}
 
-	public static void main(String[] args) throws UnknownHostException,
-			IOException, InterruptedException {
-		/*
-		 * Socket server = new Socket("192.168.1.55",9999); PrintWriter out =
-		 * new PrintWriter(server.getOutputStream(), true);
-		 * 
-		 * out.println("Hoi Pascal");
-		 */
-
-		TcpServerPeer peer = new TcpServerPeer();
-		peer.setServerIP("192.168.1.55");
-		peer.setServerPort(9999);
-		peer.Init();
-
-		SimpleMessage msg = new SimpleMessage();
-		msg.setSender("Sven");
-		msg.setMessage("Hallo Pascal!");
-
-		Thread t = new Thread(peer);
-		t.start();
-
-		peer.send(msg);
-
-		Thread.sleep(5000);
+	public void setStream(InputStream stream) {
+		this.stream = stream;
 	}
 
-	@Override
-	public void run() {
-
-		System.out.println("Starting.");
-		while (!isInterrupted) {
-			System.out.println("Looping.");
-			IClientMessage msg;
-
-			synchronized (lock) {
-				System.out.println("Locked.");
-				msg = threadSafeMessageQueue.poll();
-
-				while (msg != null) {
-					System.out.println("Msg != null.");
-					try {
-						XMLEncoder encoder = new XMLEncoder(
-								new BufferedOutputStream(server
-										.getOutputStream()));
-						encoder.writeObject(msg);
-						encoder.close();
-
-						msg = threadSafeMessageQueue.poll();
-					} catch (Exception ex) {
-						System.out.println("Ex:" + ex.getMessage());
-					}
-				}
-
-				try {
-					System.out.println("Waiting");
-					lock.wait();
-				} catch (InterruptedException e) {
-				}
-			}
-		}
-		System.out.println("Dying");
+	public InputStream getStream() {
+		return stream;
 	}
-	/*
-	 * public void write(Object o, String filename){ try{ XMLEncoder encoder =
-	 * new XMLEncoder( new BufferedOutputStream( new
-	 * FileOutputStream(filename))); encoder.writeObject(o); encoder.close();
-	 * }catch(IOException e){ e.printStackTrace(); } }
-	 * 
-	 * 
-	 * public Object read(String filename){ try{ XMLDecoder decoder = new
-	 * XMLDecoder( new BufferedInputStream( new FileInputStream(filename)));
-	 * Object o = decoder.readObject(); decoder.close(); return o; }catch
-	 * (FileNotFoundException e){ e.printStackTrace(); } return null; }
-	 */
 
+	public void setContext(IClientContext context) {
+		this.context = context;
+	}
+
+	public IClientContext getContext() {
+		return context;
+	}
 }

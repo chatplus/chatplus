@@ -11,6 +11,6 @@ public interface IServerContext {
 	/***
 	 * Publishes a board chat message (e.g to other chatclients on the board 
 	 */
-	public void publishBoardChatMessage(String boardName, String sender, String message);
-	// More functionality can be added here
+	
+	public void publishSimpleMessage(String sender, String message);
 }
