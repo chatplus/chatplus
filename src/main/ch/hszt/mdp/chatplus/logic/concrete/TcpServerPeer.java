@@ -156,4 +156,12 @@ public class TcpServerPeer implements IServerPeer {
 	public IClientContext getContext() {
 		return context;
 	}
+	
+	public void Start() throws IOException
+	{
+		Thread rx = new Thread(new ServerRx(context,server.getInputStream()));
+		Thread tx = new Thread(new ServerTx(server.getOutputStream()));
+		rx.start();
+		tx.start();
+	}
 }

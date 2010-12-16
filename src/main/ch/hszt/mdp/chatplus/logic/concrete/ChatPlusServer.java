@@ -5,6 +5,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.Scanner;
 
 import ch.hszt.mdp.chatplus.logic.contract.context.IServerContext;
 import ch.hszt.mdp.chatplus.logic.contract.peer.IClientPeer;
@@ -70,6 +71,14 @@ public class ChatPlusServer implements IServerContext, Runnable {
 			} catch (Exception ex) {
 			}
 		}
+	}
+	
+	public static void main(String[] args) throws IOException {
+		ChatPlusServer server = new ChatPlusServer(9999);
+		Thread serverThread = new Thread(server);
+		serverThread.start();
+		Scanner in = new Scanner(System.in);
+		in.nextLine();
 	}
 
 }

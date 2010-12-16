@@ -7,9 +7,7 @@ package ch.hszt.mdp.chatplus.logic.contract.context;
  *
  */
 public interface IClientContext {
-	
-	// More functionality can be added here
-	
-	public void displayChatMessage(String sender, String message);
-	
+		
+	public void displayChatMessage(String sender, String message);	
+
 }
