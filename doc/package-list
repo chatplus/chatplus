@@ -1,0 +1,6 @@
+ch.hszt.mdp.chatplus.gui
+ch.hszt.mdp.chatplus.logic.concrete
+ch.hszt.mdp.chatplus.logic.contract.context
+ch.hszt.mdp.chatplus.logic.contract.message
+ch.hszt.mdp.chatplus.logic.contract.peer
+test.ch.hszt.mdp.chatplus.test

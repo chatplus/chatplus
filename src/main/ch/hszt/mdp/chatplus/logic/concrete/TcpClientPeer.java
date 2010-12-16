@@ -34,7 +34,7 @@ public class TcpClientPeer implements IClientPeer {
 				try {
 					((IClientMessage) objRX.receive()).process(context);
 				} catch (IOException e) {
-
+					isInterrupted = true;
 				}
 			}
 		}
