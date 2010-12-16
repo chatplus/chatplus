@@ -26,12 +26,12 @@ import ch.hszt.mdp.chatplus.logic.contract.context.IClientContext;
 import ch.hszt.mdp.chatplus.logic.contract.peer.IServerPeer;
 
 /***
- * The GUI of the public chat room
+ * GUI of the chat application
  * 
  * @author ckaufman
  */
 
-public class GuiPublicRoom implements IClientContext {
+public class ChatGui implements IClientContext {
 
 	JTextArea readMessage;
 	JTextArea writeMessage;
@@ -46,19 +46,27 @@ public class GuiPublicRoom implements IClientContext {
 	private JFrame frame;
 
 	public static void main(String[] args) {
-		GuiPublicRoom gui = new GuiPublicRoom();
+		ChatGui gui = new ChatGui();
 		gui.guiLayout();
 	}
 
+	
+	/**
+	 * Gui Layout
+	 * 
+	 * Builds the GUI
+	 * @return void
+	 */
+	
 	public void guiLayout() {
 		// frame
-		this.frame = new JFrame("ChatPlus");
-		this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.frame.setResizable(false);
+		frame = new JFrame("ChatPlus");
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setResizable(false);
 		
 		// box with two text fields - upper to read text, lower to write text
-		this.textBox = new JPanel();
-		this.textBox.setLayout(new BorderLayout());
+		textBox = new JPanel();
+		textBox.setLayout(new BorderLayout());
 		
 		// text field to read messages from other users
 		JPanel textPanel = new JPanel();
@@ -90,33 +98,30 @@ public class GuiPublicRoom implements IClientContext {
 		userList.setFixedCellWidth(200);
 
 		// buttons
-		this.buttonPanel = new JPanel(new FlowLayout());
+		buttonPanel = new JPanel(new FlowLayout());
 		JButton send = new JButton("send");
-		this.buttonPanel.add(send);
+		buttonPanel.add(send);
 		send.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
 				sendMessage(username, writeMessage.getText());
 			}
 		});
-		
-		/*// unused buttons at the moment
- 		JButton createRoom = new JButton("create room");
-		createRoom.addActionListener(this);
-		JButton logout = new JButton("logout");
-		logout.addActionListener(this);
-		JButton login = new JButton("login");
-		login.addActionListener(this);*/
 
-		this.textBox.add(BorderLayout.NORTH, textPanel);
-		this.textBox.add(BorderLayout.SOUTH, editorPanel);
-		this.frame.getContentPane().add(BorderLayout.WEST, this.textBox);
-		this.frame.getContentPane().add(BorderLayout.EAST, userList);
-		this.frame.getContentPane().add(BorderLayout.SOUTH, this.buttonPanel);
+		textBox.add(BorderLayout.NORTH, textPanel);
+		textBox.add(BorderLayout.SOUTH, editorPanel);
+		frame.getContentPane().add(BorderLayout.WEST, textBox);
+		frame.getContentPane().add(BorderLayout.EAST, userList);
+		frame.getContentPane().add(BorderLayout.SOUTH, buttonPanel);
 		
-		this.frame.setSize(800, 500);
-		this.frame.setVisible(true);
+		frame.setSize(800, 500);
 		
-		this.getConnectionDetails();
+		//disable all elements .. we will enable them again after logging in to a server
+		disableElements();
+		
+		frame.setVisible(true);
+		
+		//get the server ip, port and username
+		getConnectionDetails();
 
 		writeMessage.requestFocusInWindow();
 	}
@@ -130,8 +135,8 @@ public class GuiPublicRoom implements IClientContext {
 	 */
 	
 	private final void disableElements() {
-		this.textBox.setEnabled(false);
-		this.buttonPanel.setEnabled(false);
+		textBox.setEnabled(false);
+		buttonPanel.setEnabled(false);
 	}
 	
 	
@@ -143,8 +148,8 @@ public class GuiPublicRoom implements IClientContext {
 	 */
 	
 	private final void enableElements() {
-		this.textBox.setEnabled(true);
-		this.buttonPanel.setEnabled(true);
+		textBox.setEnabled(true);
+		buttonPanel.setEnabled(true);
 	}
 	
 	
@@ -163,56 +168,62 @@ public class GuiPublicRoom implements IClientContext {
 		SimpleMessage msg = new SimpleMessage();
 		msg.setMessage(message);
 		msg.setSender(sender);
-		this.serverPeer.send(msg);
+		serverPeer.send(msg);
 		
 		//already display the message in the chat box
-		this.processBoardChatMessage(this.username, message);
+		displayChatMessage(username, message);
+		writeMessage.setText("");
 	}
 
 	
 	/**
-	 * Process board chat message
+	 * Display chat message
 	 * 
-	 * Display a message which was received
-	 * @param	sender
-	 * @param	message
+	 * Display a message which was sent by the server
 	 * @return	void 
 	 */
 	
 	@Override
-	public void processBoardChatMessage(String sender, String message) {
+	public void displayChatMessage(String sender, String message) {
 		readMessage.append(sender + " says:\t" + message + "\n");
 	}
-
-
+	
+	
+	/**
+	 * Get all the connection details from the user
+	 * 
+	 * Display a message which was received
+	 * @return	void 
+	 */
+	
 	private void getConnectionDetails() {
 		
 		//ask for the server ip
 		String serverIP = (String)JOptionPane.showInputDialog(
-				this.frame,
+				frame,
                 "Please enter the server IP:",
                 "Server IP",
                 JOptionPane.PLAIN_MESSAGE);
 		
 		//ask for the server port
 		Integer serverPort = Integer.parseInt(JOptionPane.showInputDialog(
-				this.frame,
+				frame,
                 "Please enter the server Port:",
                 "Server Port",
                 JOptionPane.PLAIN_MESSAGE));
 				
 		//try to connect to the server	
-		if(!this.connectToServer(serverIP, serverPort)) {
+		if(!connectToServer(serverIP, serverPort)) {
 			
 			//request the connection details until a connection can be established
 			//must be cancellable in a future version
-			this.getConnectionDetails();
+			getConnectionDetails();
 			
 		} else {
 			
 			//ask for the username
-			this.username = (String)JOptionPane.showInputDialog(
-					this.frame,
+			username = (String)JOptionPane.showInputDialog(
+					frame,
 	                "Please enter your username:",
 	                "Username",
 	                JOptionPane.PLAIN_MESSAGE);
@@ -221,38 +232,54 @@ public class GuiPublicRoom implements IClientContext {
 
 	}
 	
+	
+	/**
+	 * Connect to the server
+	 * 
+	 * Establish the connection between the client and the server
+	 * @param	ip
+	 * @param	port
+	 * @return	void 
+	 */
+	
 	private boolean connectToServer(String ip, Integer port) {
 
 		//init the server peer
-		this.serverPeer = new TcpServerPeer();
-		this.serverPeer.setServerIP(ip);
-		this.serverPeer.setServerPort(port);
+		serverPeer = new TcpServerPeer();
+		serverPeer.setServerIP(ip);
+		serverPeer.setServerPort(port);
+		serverPeer.setContext(this);
 		
 		try {
 			//init the server peer. will throw various exceptions if the connection failed
-			this.serverPeer.Init();
+			serverPeer.Init();
+			serverPeer.Start();
 			
 			//store the server ip and port for later usage
-			this.serverIP = ip;
-			this.serverPort = port;
-			
-			//To not block the GUI we have to start a separate thread for the peer handling
-			Thread t = new Thread(this.serverPeer);
-			t.start();
+			serverIP = ip;
+			serverPort = port;
 			
 			return true;
 		} catch (UnknownHostException e) {
-			JOptionPane.showMessageDialog(this.frame, "Unknown host");
+			JOptionPane.showMessageDialog(frame, "Unknown host");
 			return false;
 		} catch (IOException e) {
-			JOptionPane.showMessageDialog(this.frame, "Could not connect to the server");
+			JOptionPane.showMessageDialog(frame, "Could not connect to the server");
 			return false;
 		}
 		
 	}
 	
+	
+	/**
+	 * Disconnect from the server
+	 * 
+	 * Close the connection to the server
+	 * @return	void 
+	 */
+	
 	private void disconnectFromServer() {
-		this.serverPeer.Stop();
+		serverPeer.Stop();
 	}
-
+	
 }

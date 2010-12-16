@@ -22,38 +22,36 @@ public class TcpServerPeer implements IServerPeer {
 
 	private InputStream stream;
 	private IClientContext context;
-	
-	private class ServerRx implements Runnable
-	{
+
+	private class ServerRx implements Runnable {
 		private InputStream stream;
 		private IClientContext context;
-		
+
 		public ServerRx(IClientContext context, InputStream stream) {
 			this.context = context;
 			this.stream = stream;
 		}
-		
+
 		@Override
 		public void run() {
-			while(!isInterrupted)
-			{
-				XMLDecoder decoder = new XMLDecoder(
-					    new BufferedInputStream(stream));
-					  
-				Object obj = decoder.readObject();					  
-				((IServerMessage)obj).process(context);
+			while (!isInterrupted) {
+				XMLDecoder decoder = new XMLDecoder(new BufferedInputStream(
+						stream));
+
+				Object obj = decoder.readObject();
+				((IServerMessage) obj).process(context);
 			}
 		}
-		
+
 	}
-	
-	private class ServerTx implements Runnable
-	{
+
+	private class ServerTx implements Runnable {
 		private OutputStream stream;
 
 		public ServerTx(OutputStream stream) {
 			this.stream = stream;
 		}
+
 		@Override
 		public void run() {
 
@@ -90,8 +88,9 @@ public class TcpServerPeer implements IServerPeer {
 			}
 			System.out.println("Dying");
 		}
-		
+
 	}
+
 	private String serverIP = "";
 	private int serverPort;
 
@@ -128,6 +127,13 @@ public class TcpServerPeer implements IServerPeer {
 
 	public void Init() throws UnknownHostException, IOException {
 		server = new Socket(serverIP, serverPort);
+	}
+
+	public void Start() throws IOException {
+		Thread rx = new Thread(new ServerRx(context, server.getInputStream()));
+		Thread tx = new Thread(new ServerTx(server.getOutputStream()));
+		rx.start();
+		tx.start();
 	}
 
 	public void Stop() {
