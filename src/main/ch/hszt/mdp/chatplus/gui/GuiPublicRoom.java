@@ -123,13 +123,6 @@ public class GuiPublicRoom implements ActionListener, IClientContext {
 		// server.send(newMessage);
 		writeMessage.setText(""); 
 		writeMessage.requestFocusInWindow();
-		processBoardChatMessage("Corinne", "Hello");
-	}
-
-	@Override
-	public void processBoardChatMessage(String sender, String message) {
-		readMessage.append(sender + " says:\t" + message + "\n");
-
 	}
 
 	@Override
