@@ -56,32 +56,6 @@ public class TcpServerPeer implements IServerPeer, Runnable {
 		lock.notify();
 	}
 
-	public static void main(String[] args) throws UnknownHostException,
-			IOException, InterruptedException {
-		/*
-		 * Socket server = new Socket("192.168.1.55",9999); PrintWriter out =
-		 * new PrintWriter(server.getOutputStream(), true);
-		 * 
-		 * out.println("Hoi Pascal");
-		 */
-
-		TcpServerPeer peer = new TcpServerPeer();
-		peer.setServerIP("192.168.1.55");
-		peer.setServerPort(9999);
-		peer.Init();
-
-		SimpleMessage msg = new SimpleMessage();
-		msg.setSender("Sven");
-		msg.setMessage("Hallo Pascal!");
-
-		Thread t = new Thread(peer);
-		t.start();
-
-		peer.send(msg);
-
-		Thread.sleep(5000);
-	}
-
 	@Override
 	public void run() {
 
