@@ -4,6 +4,7 @@ import java.beans.XMLDecoder;
 import java.beans.XMLEncoder;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -35,11 +36,12 @@ public class TcpClientPeer implements IClientPeer{
 		public void run() {
 			while(!isInterrupted)
 			{
-				XMLDecoder decoder = new XMLDecoder(
-					    new BufferedInputStream(stream));
-					  
-				Object obj = decoder.readObject();					  
-				((IClientMessage)obj).process(context);
+				ObjectReceiver objRX = new ObjectReceiver(stream);				
+				try {
+					((IClientMessage)objRX.receive()).process(context);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 	}
@@ -51,24 +53,23 @@ public class TcpClientPeer implements IClientPeer{
 			this.stream = stream;
 		}
 		public void run() {
-			System.out.println("Starting.");
+			System.out.println("[ClientTX]\tStarting.");
 			
 			while (!isInterrupted) {
-				System.out.println("Looping.");
+				System.out.println("[ClientTX]\tLooping.");
 				IServerMessage msg;
 
 				synchronized (lock) {
-					System.out.println("Locked.");
+					System.out.println("[ClientTX]\tLocked.");
 					msg = threadSafeMessageQueue.poll();
 
 					while (msg != null) {
-						System.out.println("Msg != null.");
+						System.out.println("[ClientTX]\tMsg != null.");
 						try {
-							XMLEncoder encoder = new XMLEncoder(
-									new BufferedOutputStream(stream));
-							encoder.writeObject(msg);
-							encoder.close();
-
+							
+							ObjectSender sender = new ObjectSender(stream);
+							sender.send(msg);
+							
 							msg = threadSafeMessageQueue.poll();
 						} catch (Exception ex) {
 							System.out.println("Ex:" + ex.getMessage());
@@ -76,13 +77,13 @@ public class TcpClientPeer implements IClientPeer{
 					}
 
 					try {
-						System.out.println("Waiting");
+						System.out.println("[ClientTX]\tWaiting");
 						lock.wait();
 					} catch (InterruptedException e) {
 					}
 				}
 			}
-			System.out.println("Dying");
+			System.out.println("[ClientTX]\tDying");
 		}		
 	}
 	

@@ -7,6 +7,7 @@ import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.LinkedList;
@@ -37,11 +38,12 @@ public class TcpServerPeer implements IServerPeer {
 		public void run() {
 			while(!isInterrupted)
 			{
-				XMLDecoder decoder = new XMLDecoder(
-					    new BufferedInputStream(stream));
-					  
-				Object obj = decoder.readObject();					  
-				((IServerMessage)obj).process(context);
+				ObjectReceiver objRx = new ObjectReceiver(stream);
+				try {
+					((IServerMessage)objRx.receive()).process(context);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 		
@@ -69,11 +71,9 @@ public class TcpServerPeer implements IServerPeer {
 					while (msg != null) {
 						System.out.println("Msg != null.");
 						try {
-							XMLEncoder encoder = new XMLEncoder(
-									new BufferedOutputStream(server
-											.getOutputStream()));
-							encoder.writeObject(msg);
-							encoder.close();
+							
+							ObjectSender sender = new ObjectSender(stream);
+							sender.send(msg);
 
 							msg = threadSafeMessageQueue.poll();
 						} catch (Exception ex) {
@@ -85,6 +85,7 @@ public class TcpServerPeer implements IServerPeer {
 						System.out.println("Waiting");
 						lock.wait();
 					} catch (InterruptedException e) {
+						System.out.println("Error");
 					}
 				}
 			}
