@@ -10,6 +10,7 @@ import ch.hszt.mdp.chatplus.logic.contract.peer.IServerPeer;
  * A demo chatplus client to test the abstract communication behaviour
  * @author sfrick
  */
+/*
 public class ChatPlusClient implements IClientContext {
 
 	public IServerPeer serverPeer;
@@ -53,3 +54,4 @@ public class ChatPlusClient implements IClientContext {
 		
 	}
 }
+*/
