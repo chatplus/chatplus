@@ -1,11 +1,32 @@
 package ch.hszt.mdp.chatplus.gui;
 
+import javax.swing.GroupLayout;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JTextField;
+import javax.swing.JTextField;
+import javax.swing.LayoutStyle;
+import javax.swing.WindowConstants;
+
 /**
  * 
  * @author pascalbeyeler
  */
-public class ConnectionDialog extends javax.swing.JDialog {
+public class ConnectionDialog extends JDialog {
 
+	// Variables declaration - do not modify//GEN-BEGIN:variables
+	private JButton connectButton;
+	private JTextField serverIPField;
+	private JLabel serverIPLabel;
+	private JTextField serverPortField;
+	private JLabel serverPortLabel;
+	private JTextField usernameField;
+	private JLabel usernameLabel;
+	// End of variables declaration//GEN-END:variables
+	
+	
 	/** Creates new form LoginForm */
 	public ConnectionDialog(java.awt.Frame parent, boolean modal) {
 		super(parent, modal);
@@ -21,42 +42,21 @@ public class ConnectionDialog extends javax.swing.JDialog {
 	private void initComponents() {
 		java.awt.GridBagConstraints gridBagConstraints;
 
-		serverIPLabel = new javax.swing.JLabel();
-		serverIPField = new javax.swing.JTextField();
-		serverPortLabel = new javax.swing.JLabel();
-		serverPortField = new javax.swing.JTextField();
-		usernameField = new javax.swing.JTextField();
-		usernameLabel = new javax.swing.JLabel();
-		connectButton = new javax.swing.JButton();
+		serverIPLabel = new JLabel();
+		serverIPField = new JTextField();
+		serverPortLabel = new JLabel();
+		serverPortField = new JTextField();
+		usernameField = new JTextField();
+		usernameLabel = new JLabel();
+		connectButton = new JButton();
 
-		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		setTitle("Login details");
 		setAlwaysOnTop(true);
 
 		serverIPLabel.setText("Server IP:");
-
-		serverIPField.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				serverIPFieldActionPerformed(evt);
-			}
-		});
-
 		serverPortLabel.setText("Server Port:");
-
-		serverPortField.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				serverPortFieldActionPerformed(evt);
-			}
-		});
-
-		usernameField.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				usernameFieldActionPerformed(evt);
-			}
-		});
-
 		usernameLabel.setText("Username:");
-
 		connectButton.setText("Connect");
 		connectButton.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -64,13 +64,11 @@ public class ConnectionDialog extends javax.swing.JDialog {
 			}
 		});
 
-		javax.swing.GroupLayout layout = new javax.swing.GroupLayout(
-				getContentPane());
+		GroupLayout layout = new GroupLayout(getContentPane());
 		getContentPane().setLayout(layout);
 		layout
 				.setHorizontalGroup(layout
-						.createParallelGroup(
-								javax.swing.GroupLayout.Alignment.LEADING)
+						.createParallelGroup(GroupLayout.Alignment.LEADING)
 						.addGroup(
 								layout
 										.createSequentialGroup()
@@ -78,14 +76,14 @@ public class ConnectionDialog extends javax.swing.JDialog {
 										.addGroup(
 												layout
 														.createParallelGroup(
-																javax.swing.GroupLayout.Alignment.LEADING)
+																GroupLayout.Alignment.LEADING)
 														.addGroup(
 																layout
 																		.createSequentialGroup()
 																		.addGroup(
 																				layout
 																						.createParallelGroup(
-																								javax.swing.GroupLayout.Alignment.LEADING)
+																								GroupLayout.Alignment.LEADING)
 																						.addComponent(
 																								serverPortLabel)
 																						.addComponent(
@@ -93,99 +91,62 @@ public class ConnectionDialog extends javax.swing.JDialog {
 																						.addComponent(
 																								usernameLabel))
 																		.addPreferredGap(
-																				javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+																				LayoutStyle.ComponentPlacement.RELATED)
 																		.addGroup(
 																				layout
 																						.createParallelGroup(
-																								javax.swing.GroupLayout.Alignment.LEADING)
+																								GroupLayout.Alignment.LEADING)
 																						.addComponent(
 																								serverIPField,
-																								javax.swing.GroupLayout.DEFAULT_SIZE,
+																								GroupLayout.DEFAULT_SIZE,
 																								264,
 																								Short.MAX_VALUE)
 																						.addComponent(
 																								serverPortField,
-																								javax.swing.GroupLayout.DEFAULT_SIZE,
+																								GroupLayout.DEFAULT_SIZE,
 																								264,
 																								Short.MAX_VALUE)
 																						.addComponent(
 																								usernameField,
-																								javax.swing.GroupLayout.DEFAULT_SIZE,
+																								GroupLayout.DEFAULT_SIZE,
 																								264,
 																								Short.MAX_VALUE)))
 														.addComponent(
 																connectButton,
-																javax.swing.GroupLayout.Alignment.TRAILING))
+																GroupLayout.Alignment.TRAILING))
 										.addContainerGap()));
-		layout
-				.setVerticalGroup(layout
-						.createParallelGroup(
-								javax.swing.GroupLayout.Alignment.LEADING)
-						.addGroup(
-								layout
-										.createSequentialGroup()
-										.addContainerGap()
-										.addGroup(
-												layout
-														.createParallelGroup(
-																javax.swing.GroupLayout.Alignment.BASELINE)
-														.addComponent(
-																serverIPLabel)
-														.addComponent(
-																serverIPField,
-																javax.swing.GroupLayout.PREFERRED_SIZE,
-																javax.swing.GroupLayout.DEFAULT_SIZE,
-																javax.swing.GroupLayout.PREFERRED_SIZE))
-										.addPreferredGap(
-												javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-										.addGroup(
-												layout
-														.createParallelGroup(
-																javax.swing.GroupLayout.Alignment.BASELINE)
-														.addComponent(
-																serverPortLabel)
-														.addComponent(
-																serverPortField,
-																javax.swing.GroupLayout.PREFERRED_SIZE,
-																javax.swing.GroupLayout.DEFAULT_SIZE,
-																javax.swing.GroupLayout.PREFERRED_SIZE))
-										.addPreferredGap(
-												javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-										.addGroup(
-												layout
-														.createParallelGroup(
-																javax.swing.GroupLayout.Alignment.BASELINE)
-														.addComponent(
-																usernameField,
-																javax.swing.GroupLayout.PREFERRED_SIZE,
-																javax.swing.GroupLayout.DEFAULT_SIZE,
-																javax.swing.GroupLayout.PREFERRED_SIZE)
-														.addComponent(
-																usernameLabel))
-										.addPreferredGap(
-												javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-										.addComponent(connectButton)
-										.addContainerGap(
-												javax.swing.GroupLayout.DEFAULT_SIZE,
-												Short.MAX_VALUE)));
+		layout.setVerticalGroup(layout.createParallelGroup(
+				GroupLayout.Alignment.LEADING).addGroup(
+				layout.createSequentialGroup().addContainerGap().addGroup(
+						layout.createParallelGroup(
+								GroupLayout.Alignment.BASELINE).addComponent(
+								serverIPLabel).addComponent(serverIPField,
+								GroupLayout.PREFERRED_SIZE,
+								GroupLayout.DEFAULT_SIZE,
+								GroupLayout.PREFERRED_SIZE)).addPreferredGap(
+						LayoutStyle.ComponentPlacement.UNRELATED).addGroup(
+						layout.createParallelGroup(
+								GroupLayout.Alignment.BASELINE).addComponent(
+								serverPortLabel).addComponent(serverPortField,
+								GroupLayout.PREFERRED_SIZE,
+								GroupLayout.DEFAULT_SIZE,
+								GroupLayout.PREFERRED_SIZE)).addPreferredGap(
+						LayoutStyle.ComponentPlacement.UNRELATED).addGroup(
+						layout.createParallelGroup(
+								GroupLayout.Alignment.BASELINE).addComponent(
+								usernameField, GroupLayout.PREFERRED_SIZE,
+								GroupLayout.DEFAULT_SIZE,
+								GroupLayout.PREFERRED_SIZE).addComponent(
+								usernameLabel)).addPreferredGap(
+						LayoutStyle.ComponentPlacement.UNRELATED).addComponent(
+						connectButton).addContainerGap(
+						GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
 
 		pack();
 	}
 
-	private void serverIPFieldActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_serverIPFieldActionPerformed
-		// TODO add your handling code here:
-	}
-
-	private void serverPortFieldActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_serverPortFieldActionPerformed
-		// TODO add your handling code here:
-	}
-
-	private void connectButtonActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_connectButtonActionPerformed
-		// TODO add your handling code here:
-	}
-
-	private void usernameFieldActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_usernameFieldActionPerformed
-		// TODO add your handling code here:
+	private void connectButtonActionPerformed(java.awt.event.ActionEvent evt) {
+		this.dispose();
 	}
 
 	/**
@@ -195,8 +156,8 @@ public class ConnectionDialog extends javax.swing.JDialog {
 	public static void main(String args[]) {
 		java.awt.EventQueue.invokeLater(new Runnable() {
 			public void run() {
-				ConnectionDialog dialog = new ConnectionDialog(
-						new javax.swing.JFrame(), true);
+				ConnectionDialog dialog = new ConnectionDialog(new JFrame(),
+						true);
 				dialog.addWindowListener(new java.awt.event.WindowAdapter() {
 					public void windowClosing(java.awt.event.WindowEvent e) {
 						System.exit(0);
@@ -206,15 +167,18 @@ public class ConnectionDialog extends javax.swing.JDialog {
 			}
 		});
 	}
+	
+	
+	public String getServerIP() {
+		return serverIPField.getText();
+	}
+	
+	public Integer getServerPort() {
+		return Integer.parseInt(serverPortField.getText());
+	}
 
-	// Variables declaration - do not modify//GEN-BEGIN:variables
-	private javax.swing.JButton connectButton;
-	private javax.swing.JTextField serverIPField;
-	private javax.swing.JLabel serverIPLabel;
-	private javax.swing.JTextField serverPortField;
-	private javax.swing.JLabel serverPortLabel;
-	private javax.swing.JTextField usernameField;
-	private javax.swing.JLabel usernameLabel;
-	// End of variables declaration//GEN-END:variables
+	public String getUsername() {
+		return usernameField.getText();
+	}
 
 }
