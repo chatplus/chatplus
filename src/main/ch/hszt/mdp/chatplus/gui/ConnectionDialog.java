@@ -1,15 +1,10 @@
 package ch.hszt.mdp.chatplus.gui;
 
-import java.awt.Dimension;
-import java.awt.Toolkit;
-import java.awt.event.WindowEvent;
-
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JTextField;
 import javax.swing.JTextField;
 import javax.swing.LayoutStyle;
 import javax.swing.WindowConstants;
@@ -20,7 +15,7 @@ import javax.swing.WindowConstants;
  */
 public class ConnectionDialog extends JDialog {
 
-	// Variables declaration - do not modify//GEN-BEGIN:variables
+	private static final long serialVersionUID = -1598319247624850190L;
 	private JButton connectButton;
 	private JTextField serverIPField;
 	private JLabel serverIPLabel;
@@ -28,8 +23,6 @@ public class ConnectionDialog extends JDialog {
 	private JLabel serverPortLabel;
 	private JTextField usernameField;
 	private JLabel usernameLabel;
-
-	// End of variables declaration//GEN-END:variables
 
 	/** Creates new form LoginForm */
 	public ConnectionDialog(java.awt.Frame parent, boolean modal) {

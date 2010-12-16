@@ -10,11 +10,13 @@ import java.util.Scanner;
 import ch.hszt.mdp.chatplus.logic.contract.context.IServerContext;
 import ch.hszt.mdp.chatplus.logic.contract.peer.IClientPeer;
 
+
 /***
  * A demo chatplus server to test the abstract communication behaviour
  * 
  * @author sfrick
  */
+
 public class ChatPlusServer implements IServerContext, Runnable {
 
 	private int serverPort;
