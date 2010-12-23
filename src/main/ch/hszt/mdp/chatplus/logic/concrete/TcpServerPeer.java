@@ -3,6 +3,7 @@ package ch.hszt.mdp.chatplus.logic.concrete;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.LinkedList;
@@ -29,12 +30,13 @@ public class TcpServerPeer implements IServerPeer {
 
 		@Override
 		public void run() {
-			while (!isInterrupted) {
+			while(!isInterrupted)
+			{
 				ObjectReceiver objRx = new ObjectReceiver(stream);
 				try {
-					((IServerMessage) objRx.receive()).process(context);
+					((IServerMessage)objRx.receive()).process(context);
 				} catch (IOException e) {
-
+					e.printStackTrace();
 				}
 			}
 		}
@@ -63,7 +65,6 @@ public class TcpServerPeer implements IServerPeer {
 					while (msg != null) {
 						System.out.println("Msg != null.");
 						try {
-
 							ObjectSender sender = new ObjectSender(stream);
 							sender.send(msg);
 
@@ -151,5 +152,10 @@ public class TcpServerPeer implements IServerPeer {
 	public IClientContext getContext() {
 		return context;
 	}
-
-}
+	public void Start() throws IOException
+	{
+		Thread rx = new Thread(new ServerRx(context,server.getInputStream()));
+		Thread tx = new Thread(new ServerTx(server.getOutputStream()));
+		rx.start();
+		tx.start();
+	}

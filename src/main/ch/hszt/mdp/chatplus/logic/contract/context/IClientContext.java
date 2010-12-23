@@ -11,14 +11,7 @@ import java.util.List;
  * 
  */
 public interface IClientContext {
-
 	public void displayChatMessage(String sender, String message);
 	public void notifyUserStatusChange(String username, boolean isOnline);
-	public void processLoginResponse(String username, boolean isAuthorised);
-	
-	/*
-	public void addChatUserList(List<String> users);
-	public void addUser(String user);
-	public void removeUser(String user);
-	*/
+	public void processLoginResponse(String username, boolean isAuthorised);	
 }

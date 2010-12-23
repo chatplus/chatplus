@@ -5,6 +5,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.LinkedList;
 import java.util.Queue;
+
 import java.util.Random;
 import java.util.Scanner;
 
@@ -113,6 +114,14 @@ public class ChatPlusServer implements IServerContext, Runnable {
 			} catch (Exception ex) {
 			}
 		}
+	}
+	
+	public static void main(String[] args) throws IOException {
+		ChatPlusServer server = new ChatPlusServer(9999);
+		Thread serverThread = new Thread(server);
+		serverThread.start();
+		Scanner in = new Scanner(System.in);
+		in.nextLine();
 	}
 
 	public static void main(String[] args) throws IOException {

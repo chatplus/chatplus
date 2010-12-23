@@ -65,10 +65,8 @@ public class TcpClientPeer implements IClientPeer {
 					while (msg != null) {
 						System.out.println("[ClientTX]\tMsg != null.");
 						try {
-
 							ObjectSender sender = new ObjectSender(stream);
 							sender.send(msg);
-
 							msg = threadSafeMessageQueue.poll();
 						} catch (Exception ex) {
 							System.out.println("Ex:" + ex.getMessage());
