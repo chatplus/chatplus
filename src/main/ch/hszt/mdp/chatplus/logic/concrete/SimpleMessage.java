@@ -42,18 +42,6 @@ public class SimpleMessage implements IClientMessage, IServerMessage {
 	}
 
 	
-	/**
-	 * Serialize
-	 * 
-	 * not yet implemented
-	 */
-	
-	@Override
-	public Object serialize() {
-		return null;
-	}
-	
-	
 	/*
 	 * Getters and setters 
 	 */
@@ -80,16 +68,19 @@ public class SimpleMessage implements IClientMessage, IServerMessage {
 	}
 
 	@Override
-	public void getClientSource(IClientPeer peer) {
-	}
-	
-	@Override
 	public IServerPeer getServerSource() {
 		return null;
 	}
 	
 	@Override
 	public void setServerSource(IServerPeer peer) {
+	}
+
+
+	@Override
+	public void setClientSource(IClientPeer peer) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	

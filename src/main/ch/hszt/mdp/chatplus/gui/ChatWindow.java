@@ -1,10 +1,11 @@
 package ch.hszt.mdp.chatplus.gui;
 
+import java.awt.Component;
 import java.awt.Insets;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.net.UnknownHostException;
-
+import java.util.LinkedList;
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -22,7 +23,8 @@ import javax.swing.LayoutStyle;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.WindowConstants;
 
-import ch.hszt.mdp.chatplus.logic.concrete.SimpleMessage;
+import ch.hszt.mdp.chatplus.logic.concrete.message.LoginMessage;
+import ch.hszt.mdp.chatplus.logic.concrete.message.SimpleMessage;
 import ch.hszt.mdp.chatplus.logic.concrete.TcpServerPeer;
 import ch.hszt.mdp.chatplus.logic.contract.context.IClientContext;
 
@@ -51,10 +53,12 @@ public class ChatWindow extends JFrame implements IClientContext {
 	private TcpServerPeer serverPeer;
 	private String serverIP;
 	private Integer serverPort;
-	private String username;
+	private String username = null;
+	private LinkedList<String> users;
 
 	/** Creates new form ChatWindow */
 	public ChatWindow() {
+		users = new LinkedList<String>();
 		initComponents();
 	}
 
@@ -314,7 +318,7 @@ public class ChatWindow extends JFrame implements IClientContext {
 		sendButton.setEnabled(false);
 		userList.setEnabled(false);
 	}
-	
+
 
 	/**
 	 * Enable elements
@@ -332,7 +336,7 @@ public class ChatWindow extends JFrame implements IClientContext {
 		sendButton.setEnabled(true);
 		userList.setEnabled(true);
 	}
-	
+
 
 	/**
 	 * Display connection dialog
@@ -360,7 +364,9 @@ public class ChatWindow extends JFrame implements IClientContext {
 
 						// connect to the server
 						if (connectToServer(serverIP, serverPort)) {
-							enableElements();
+							LoginMessage msg = new LoginMessage();
+							msg.setUsername(username);
+							serverPeer.send(msg);
 						} else {
 							System.out.println("not connected");
 						}
@@ -374,7 +380,7 @@ public class ChatWindow extends JFrame implements IClientContext {
 
 	}
 
-	
+
 	/**
 	 * Connect to the server
 	 * 
@@ -414,7 +420,7 @@ public class ChatWindow extends JFrame implements IClientContext {
 		}
 
 	}
-	
+
 
 	/**
 	 * Disconnect from the server
@@ -431,7 +437,7 @@ public class ChatWindow extends JFrame implements IClientContext {
 		disableElements();
 	}
 
-	
+
 	/**
 	 * Send message
 	 * 
@@ -451,7 +457,7 @@ public class ChatWindow extends JFrame implements IClientContext {
 
 		messageWriting.setText("");
 	}
-	
+
 
 	/**
 	 * Display chat message
@@ -464,6 +470,46 @@ public class ChatWindow extends JFrame implements IClientContext {
 	@Override
 	public void displayChatMessage(String sender, String message) {
 		messageDisplay.append(sender + " says:\t" + message + "\n");
+	}
+
+	
+	/**
+	 * Notify User Status Change
+	 * 
+	 * Update the user list when a new user joins or leaves the chat
+	 * 
+	 * @param	username
+	 * @param	isOnline
+	 */
+
+	@Override
+	public void notifyUserStatusChange(String username, boolean isOnline) {
+		if(username.equals(this.username) || this.username == null)
+			return;
+		if(!isOnline)		
+			users.remove(username);
+		else if(!users.contains(username))
+			users.add(username);
+		
+		userList.setListData(users.toArray());
+	}
+
+
+	/**
+	 * Process Login Response
+	 * 
+	 * @param	username
+	 * @param	isAuthorised
+	 */
+	
+	@Override
+	public void processLoginResponse(String username, boolean isAuthorised) {
+		if(isAuthorised)
+		{			
+			this.username = username;
+			JOptionPane.showMessageDialog(null, "Your username is: "+ username, "Logged in", JOptionPane.OK_OPTION);
+			enableElements();
+		}
 	}
 
 }

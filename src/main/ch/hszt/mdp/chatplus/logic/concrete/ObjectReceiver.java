@@ -29,7 +29,7 @@ public class ObjectReceiver {
 	 * @return
 	 * @throws IOException
 	 */
-	
+
 	public Object receive() throws IOException {
 		DataInputStream stream = new DataInputStream(input);
 		int dataLength = stream.readInt();

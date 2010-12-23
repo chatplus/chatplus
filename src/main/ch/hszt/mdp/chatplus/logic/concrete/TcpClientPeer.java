@@ -25,6 +25,7 @@ public class TcpClientPeer implements IClientPeer {
 		
 		private InputStream stream;
 		private IServerContext context;
+		private IClientPeer parent;
 
 		
 		/**
@@ -32,11 +33,13 @@ public class TcpClientPeer implements IClientPeer {
 		 * 
 		 * @param context
 		 * @param stream
+		 * @param parent
 		 */
 		
-		public ClientRx(IServerContext context, InputStream stream) {
+		public ClientRx(IServerContext context, InputStream stream, IClientPeer parent) {
 			this.stream = stream;
 			this.context = context;
+			this.parent = parent;
 		}
 
 		
@@ -46,13 +49,15 @@ public class TcpClientPeer implements IClientPeer {
 		 * Run method of Runnable implementation. 
 		 * Receives new objects from the Rx stream.
 		 */
-		
+
 		@Override
 		public void run() {
 			while (!isInterrupted) {
 				ObjectReceiver objRX = new ObjectReceiver(stream);
 				try {
-					((IClientMessage) objRX.receive()).process(context);
+					IClientMessage msg = ((IClientMessage) objRX.receive());
+					msg.setClientSource(parent);
+					msg.process(context);
 				} catch (IOException e) {
 					isInterrupted = true;
 				}
@@ -62,7 +67,7 @@ public class TcpClientPeer implements IClientPeer {
 	}
 
 	private class ClientTx implements Runnable {
-		
+
 		private OutputStream stream;
 
 		
@@ -98,10 +103,8 @@ public class TcpClientPeer implements IClientPeer {
 					while (msg != null) {
 						System.out.println("[ClientTX]\tMsg != null.");
 						try {
-
 							ObjectSender sender = new ObjectSender(stream);
 							sender.send(msg);
-
 							msg = threadSafeMessageQueue.poll();
 						} catch (Exception ex) {
 							System.out.println("Ex:" + ex.getMessage());
@@ -136,7 +139,7 @@ public class TcpClientPeer implements IClientPeer {
 			threadSafeMessageQueue.add(message);
 			lock.notify();
 		}
-		
+
 	}
 
 	
@@ -151,7 +154,7 @@ public class TcpClientPeer implements IClientPeer {
 		lock.notify();
 	}
 
-	
+
 	/**
 	 * Start
 	 * 
@@ -163,7 +166,7 @@ public class TcpClientPeer implements IClientPeer {
 	public void Start() throws IOException {
 		
 		Thread rx = new Thread(new ClientRx(context, clientSocket
-				.getInputStream()));
+				.getInputStream(), this));
 		Thread tx = new Thread(new ClientTx(clientSocket.getOutputStream()));
 		rx.start();
 		tx.start();
@@ -191,4 +194,9 @@ public class TcpClientPeer implements IClientPeer {
 		this.context = context;
 	}
 	
+	public boolean isAlive()
+	{
+		return !isInterrupted && clientSocket.isConnected();
+	}
+
 }

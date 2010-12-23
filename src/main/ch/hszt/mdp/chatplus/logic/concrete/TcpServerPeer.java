@@ -50,7 +50,7 @@ public class TcpServerPeer implements IServerPeer {
 		 * Run method implementation of Runnable
 		 * Accepts new objects from the input stream
 		 */
-		
+
 		@Override
 		public void run() {
 			while (!isInterrupted) {
@@ -66,7 +66,7 @@ public class TcpServerPeer implements IServerPeer {
 	}
 
 	private class ServerTx implements Runnable {
-		
+
 		private OutputStream stream;
 
 		
@@ -103,7 +103,6 @@ public class TcpServerPeer implements IServerPeer {
 					while (msg != null) {
 						System.out.println("Msg != null.");
 						try {
-
 							ObjectSender sender = new ObjectSender(stream);
 							sender.send(msg);
 
