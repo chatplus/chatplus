@@ -85,6 +85,7 @@ public class ChatWindow extends JFrame implements IClientContext {
 
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		setSize(670, 570);
+		setResizable(false);
 		setLocationRelativeTo(null);
 		setTitle("ChatPlus");
 
@@ -101,6 +102,7 @@ public class ChatWindow extends JFrame implements IClientContext {
 
 		messageWriting.setColumns(20);
 		messageWriting.setRows(5);
+		messageWriting.setLineWrap(true);
 		messageWriting.setEnabled(false);
 		messageWritingScroll.setViewportView(messageWriting);
 		messageWritingScroll
