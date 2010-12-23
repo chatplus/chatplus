@@ -20,26 +20,32 @@ import ch.hszt.mdp.chatplus.logic.contract.peer.IClientPeer;
 public class ChatPlusServer implements IServerContext, Runnable {
 
 	private int serverPort;
-
-	public int getServerPort() {
-		return serverPort;
-	}
-
-	public void setServerPort(int serverPort) {
-		this.serverPort = serverPort;
-	}
-
 	private final Queue<IClientPeer> threadSafeMessageQueue = new LinkedList<IClientPeer>();
 	private final Object lock = new Object();
 	private boolean isInterrupted = false;
-
 	private ServerSocket server;
 
+
+	/**
+	 * Constructor
+	 * 
+	 * @param serverPort
+	 * @throws IOException
+	 */
+	
 	public ChatPlusServer(int serverPort) throws IOException {
 		this.serverPort = serverPort;
 		server = new ServerSocket(serverPort);
 	}
 
+	
+	/**
+	 * Publish simple message
+	 * 
+	 * @param	sender		origin of the message
+	 * @param	message		the message body
+	 */
+	
 	@Override
 	public void publishSimpleMessage(String sender, String message) {
 		SimpleMessage msg = new SimpleMessage();
@@ -51,6 +57,14 @@ public class ChatPlusServer implements IServerContext, Runnable {
 		}
 	}
 
+	
+	/**
+	 * Run
+	 * 
+	 * Run method of Runnable implementation. 
+	 * Accepts new connections
+	 */
+	
 	@Override
 	public void run() {
 		while (!isInterrupted) {
@@ -74,6 +88,15 @@ public class ChatPlusServer implements IServerContext, Runnable {
 			}
 		}
 	}
+	
+	
+	/**
+	 * Main method to start a ChatPlus server instance
+	 * Currently runs on port 9999 by default
+	 * 
+	 * @param args
+	 * @throws IOException
+	 */
 
 	public static void main(String[] args) throws IOException {
 		ChatPlusServer server = new ChatPlusServer(9999);
@@ -81,6 +104,19 @@ public class ChatPlusServer implements IServerContext, Runnable {
 		serverThread.start();
 		Scanner in = new Scanner(System.in);
 		in.nextLine();
+	}
+
+	
+	/*
+	 * Getters and setters
+	 */
+	
+	public int getServerPort() {
+		return serverPort;
+	}
+
+	public void setServerPort(int serverPort) {
+		this.serverPort = serverPort;
 	}
 
 }

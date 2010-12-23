@@ -12,6 +12,52 @@ public class SimpleMessage implements IClientMessage, IServerMessage {
 	String sender;
 	String message;
 
+	
+	/**
+	 * Process
+	 * 
+	 * Execute a message in a server context
+	 * 
+	 * @param 	context
+	 */
+	
+	@Override
+	public void process(IServerContext context) {
+		context.publishSimpleMessage(sender, message);
+
+	}
+
+	
+	/**
+	 * Process
+	 * 
+	 * Execute a message in a client context
+	 * 
+	 * @param 	context
+	 */
+	
+	@Override
+	public void process(IClientContext context) {
+		context.displayChatMessage(sender, message);
+	}
+
+	
+	/**
+	 * Serialize
+	 * 
+	 * not yet implemented
+	 */
+	
+	@Override
+	public Object serialize() {
+		return null;
+	}
+	
+	
+	/*
+	 * Getters and setters 
+	 */
+	
 	public String getSender() {
 		return sender;
 	}
@@ -30,44 +76,23 @@ public class SimpleMessage implements IClientMessage, IServerMessage {
 
 	@Override
 	public IClientPeer getClientSource() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public void getClientSource(IClientPeer peer) {
-		// TODO Auto-generated method stub
-
 	}
-
-	@Override
-	public void process(IServerContext context) {
-		context.publishSimpleMessage(sender, message);
-
-	}
-
+	
 	@Override
 	public IServerPeer getServerSource() {
-		// TODO Auto-generated method stub
 		return null;
 	}
-
-	@Override
-	public void process(IClientContext context) {
-		context.displayChatMessage(sender, message);
-	}
-
+	
 	@Override
 	public void setServerSource(IServerPeer peer) {
-		// TODO Auto-generated method stub
-
 	}
 
-	@Override
-	public Object serialize() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	
 	/*
 	 * public void write(Object o, String filename){ try{ XMLEncoder encoder =
 	 * new XMLEncoder( new BufferedOutputStream( new

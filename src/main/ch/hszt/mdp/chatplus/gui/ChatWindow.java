@@ -30,6 +30,7 @@ import ch.hszt.mdp.chatplus.logic.contract.context.IClientContext;
  * 
  * @author pascalbeyeler
  */
+
 public class ChatWindow extends JFrame implements IClientContext {
 	
 	private static final long serialVersionUID = -1671373001474835583L;
@@ -296,6 +297,7 @@ public class ChatWindow extends JFrame implements IClientContext {
 		});
 	}
 
+	
 	/**
 	 * Disable elements
 	 * 
@@ -312,6 +314,7 @@ public class ChatWindow extends JFrame implements IClientContext {
 		sendButton.setEnabled(false);
 		userList.setEnabled(false);
 	}
+	
 
 	/**
 	 * Enable elements
@@ -329,6 +332,7 @@ public class ChatWindow extends JFrame implements IClientContext {
 		sendButton.setEnabled(true);
 		userList.setEnabled(true);
 	}
+	
 
 	/**
 	 * Display connection dialog
@@ -370,6 +374,7 @@ public class ChatWindow extends JFrame implements IClientContext {
 
 	}
 
+	
 	/**
 	 * Connect to the server
 	 * 
@@ -409,6 +414,7 @@ public class ChatWindow extends JFrame implements IClientContext {
 		}
 
 	}
+	
 
 	/**
 	 * Disconnect from the server
@@ -425,6 +431,7 @@ public class ChatWindow extends JFrame implements IClientContext {
 		disableElements();
 	}
 
+	
 	/**
 	 * Send message
 	 * 
@@ -444,6 +451,7 @@ public class ChatWindow extends JFrame implements IClientContext {
 
 		messageWriting.setText("");
 	}
+	
 
 	/**
 	 * Display chat message

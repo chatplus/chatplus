@@ -173,7 +173,11 @@ public class ConnectionDialog extends JDialog {
 	}
 
 	public Integer getServerPort() {
-		return Integer.parseInt(serverPortField.getText());
+		try {
+			return Integer.parseInt(serverPortField.getText());
+		} catch(NumberFormatException e) {
+			return 0;
+		}
 	}
 
 	public String getUsername() {

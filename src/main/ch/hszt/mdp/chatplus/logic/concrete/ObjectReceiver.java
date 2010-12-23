@@ -10,10 +10,26 @@ public class ObjectReceiver {
 
 	InputStream input;
 
+	/**
+	 * Constructor
+	 * 
+	 * @param input
+	 */
+	
 	public ObjectReceiver(InputStream input) {
 		this.input = input;
 	}
 
+	
+	/**
+	 * Receive
+	 * 
+	 * Deserialize an XML input stream to an object.
+	 * 
+	 * @return
+	 * @throws IOException
+	 */
+	
 	public Object receive() throws IOException {
 		DataInputStream stream = new DataInputStream(input);
 		int dataLength = stream.readInt();
@@ -27,4 +43,5 @@ public class ObjectReceiver {
 		bais.close();
 		return obj;
 	}
+	
 }
