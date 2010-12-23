@@ -28,11 +28,24 @@ public class ClientTester implements IClientContext {
 			msg.setMessage(input);
 			peer.send(msg);
 		}
+		
 	}
 
 	@Override
 	public void displayChatMessage(String sender, String message) {
 		System.out.println(sender + ":\t" + message);
+	}
+
+	@Override
+	public void notifyUserStatusChange(String username, boolean isOnline) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void processLoginResponse(String username, boolean isAuthorised) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
