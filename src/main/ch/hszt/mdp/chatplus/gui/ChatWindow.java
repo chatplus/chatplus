@@ -306,8 +306,6 @@ public class ChatWindow extends JFrame implements IClientContext {
 	 * Disable elements
 	 * 
 	 * Disables all interface elements
-	 * 
-	 * @return void
 	 */
 
 	private final void disableElements() {
@@ -324,8 +322,6 @@ public class ChatWindow extends JFrame implements IClientContext {
 	 * Enable elements
 	 * 
 	 * Enables all interface elements
-	 * 
-	 * @return void
 	 */
 
 	private final void enableElements() {
@@ -342,8 +338,6 @@ public class ChatWindow extends JFrame implements IClientContext {
 	 * Display connection dialog
 	 * 
 	 * Open the connection dialog
-	 * 
-	 * @return void
 	 */
 
 	public void displayConnectionDialog() {
@@ -388,7 +382,6 @@ public class ChatWindow extends JFrame implements IClientContext {
 	 * 
 	 * @param ip
 	 * @param port
-	 * @return void
 	 */
 
 	private boolean connectToServer(String ip, Integer port) {
@@ -426,8 +419,6 @@ public class ChatWindow extends JFrame implements IClientContext {
 	 * Disconnect from the server
 	 * 
 	 * Close the connection to the server
-	 * 
-	 * @return void
 	 */
 
 	private void disconnectFromServer() {
@@ -445,7 +436,6 @@ public class ChatWindow extends JFrame implements IClientContext {
 	 * 
 	 * @param sender
 	 * @param message
-	 * @return void
 	 */
 
 	private final void sendMessage(String sender, String message) {
@@ -463,8 +453,6 @@ public class ChatWindow extends JFrame implements IClientContext {
 	 * Display chat message
 	 * 
 	 * Display a message which was sent by the server
-	 * 
-	 * @return void
 	 */
 
 	@Override

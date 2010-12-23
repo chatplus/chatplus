@@ -26,7 +26,7 @@ public class ObjectReceiver {
 	 * 
 	 * Deserialize an XML input stream to an object.
 	 * 
-	 * @return
+	 * @return	Object
 	 * @throws IOException
 	 */
 
