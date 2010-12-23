@@ -21,10 +21,12 @@ public class TcpClientPeer implements IClientPeer {
 	private class ClientRx implements Runnable {
 		private InputStream stream;
 		private IServerContext context;
+		private IClientPeer parent;
 
-		public ClientRx(IServerContext context, InputStream stream) {
+		public ClientRx(IServerContext context, InputStream stream, IClientPeer parent) {
 			this.stream = stream;
 			this.context = context;
+			this.parent = parent;
 		}
 
 		@Override
@@ -32,9 +34,11 @@ public class TcpClientPeer implements IClientPeer {
 			while (!isInterrupted) {
 				ObjectReceiver objRX = new ObjectReceiver(stream);
 				try {
-					((IClientMessage) objRX.receive()).process(context);
+					IClientMessage msg = ((IClientMessage) objRX.receive());
+					msg.setClientSource(parent);
+					msg.process(context);
 				} catch (IOException e) {
-
+					isInterrupted = true;
 				}
 			}
 		}
@@ -117,10 +121,15 @@ public class TcpClientPeer implements IClientPeer {
 
 	public void Start() throws IOException {
 		Thread rx = new Thread(new ClientRx(context, clientSocket
-				.getInputStream()));
+				.getInputStream(), this));
 		Thread tx = new Thread(new ClientTx(clientSocket.getOutputStream()));
 		rx.start();
 		tx.start();
+	}
+	
+	public boolean isAlive()
+	{
+		return !isInterrupted && clientSocket.isConnected();
 	}
 
 }

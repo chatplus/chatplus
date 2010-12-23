@@ -1,5 +1,7 @@
 package ch.hszt.mdp.chatplus.logic.contract.context;
 
+import java.util.List;
+
 /***
  * This interface describes the functionality a client must provide. By now it's
  * far from being complete; it will be extended step by step when implementing
@@ -11,5 +13,12 @@ package ch.hszt.mdp.chatplus.logic.contract.context;
 public interface IClientContext {
 
 	public void displayChatMessage(String sender, String message);
-
+	public void notifyUserStatusChange(String username, boolean isOnline);
+	public void processLoginResponse(String username, boolean isAuthorised);
+	
+	/*
+	public void addChatUserList(List<String> users);
+	public void addUser(String user);
+	public void removeUser(String user);
+	*/
 }

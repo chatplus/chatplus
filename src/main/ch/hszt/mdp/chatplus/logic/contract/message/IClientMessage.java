@@ -12,9 +12,6 @@ import ch.hszt.mdp.chatplus.logic.contract.peer.IClientPeer;
 public interface IClientMessage {
 	public void process(IServerContext context);
 
-	public Object serialize();
-
 	public IClientPeer getClientSource();
-
-	public void getClientSource(IClientPeer peer);
+	public void setClientSource(IClientPeer peer);
 }

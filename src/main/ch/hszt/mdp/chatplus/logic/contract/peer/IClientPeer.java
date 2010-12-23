@@ -7,4 +7,5 @@ import ch.hszt.mdp.chatplus.logic.contract.message.IServerMessage;
  */
 public interface IClientPeer {
 	public void send(IServerMessage message);
+	public boolean isAlive();
 }
