@@ -1,9 +1,5 @@
 package ch.hszt.mdp.chatplus.logic.concrete;
 
-import java.beans.XMLDecoder;
-import java.beans.XMLEncoder;
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -13,7 +9,6 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 import ch.hszt.mdp.chatplus.logic.contract.context.IClientContext;
-import ch.hszt.mdp.chatplus.logic.contract.context.IServerContext;
 import ch.hszt.mdp.chatplus.logic.contract.message.IClientMessage;
 import ch.hszt.mdp.chatplus.logic.contract.message.IServerMessage;
 import ch.hszt.mdp.chatplus.logic.contract.peer.IServerPeer;
@@ -22,38 +17,37 @@ public class TcpServerPeer implements IServerPeer {
 
 	private InputStream stream;
 	private IClientContext context;
-	
-	private class ServerRx implements Runnable
-	{
+
+	private class ServerRx implements Runnable {
 		private InputStream stream;
 		private IClientContext context;
-		
+
 		public ServerRx(IClientContext context, InputStream stream) {
 			this.context = context;
 			this.stream = stream;
 		}
-		
+
 		@Override
 		public void run() {
-			while(!isInterrupted)
-			{
-				XMLDecoder decoder = new XMLDecoder(
-					    new BufferedInputStream(stream));
-					  
-				Object obj = decoder.readObject();					  
-				((IServerMessage)obj).process(context);
+			while (!isInterrupted) {
+				ObjectReceiver objRx = new ObjectReceiver(stream);
+				try {
+					((IServerMessage) objRx.receive()).process(context);
+				} catch (IOException e) {
+
+				}
 			}
 		}
-		
+
 	}
-	
-	private class ServerTx implements Runnable
-	{
+
+	private class ServerTx implements Runnable {
 		private OutputStream stream;
 
 		public ServerTx(OutputStream stream) {
 			this.stream = stream;
 		}
+
 		@Override
 		public void run() {
 
@@ -69,11 +63,9 @@ public class TcpServerPeer implements IServerPeer {
 					while (msg != null) {
 						System.out.println("Msg != null.");
 						try {
-							XMLEncoder encoder = new XMLEncoder(
-									new BufferedOutputStream(server
-											.getOutputStream()));
-							encoder.writeObject(msg);
-							encoder.close();
+
+							ObjectSender sender = new ObjectSender(stream);
+							sender.send(msg);
 
 							msg = threadSafeMessageQueue.poll();
 						} catch (Exception ex) {
@@ -85,13 +77,15 @@ public class TcpServerPeer implements IServerPeer {
 						System.out.println("Waiting");
 						lock.wait();
 					} catch (InterruptedException e) {
+						System.out.println("Error");
 					}
 				}
 			}
 			System.out.println("Dying");
 		}
-		
+
 	}
+
 	private String serverIP = "";
 	private int serverPort;
 
@@ -130,9 +124,16 @@ public class TcpServerPeer implements IServerPeer {
 		server = new Socket(serverIP, serverPort);
 	}
 
+	public void Start() throws IOException {
+		Thread rx = new Thread(new ServerRx(context, server.getInputStream()));
+		Thread tx = new Thread(new ServerTx(server.getOutputStream()));
+		rx.start();
+		tx.start();
+	}
+
 	public void Stop() {
 		isInterrupted = true;
-		lock.notify();
+		// lock.notify();
 	}
 
 	public void setStream(InputStream stream) {
@@ -150,4 +151,5 @@ public class TcpServerPeer implements IServerPeer {
 	public IClientContext getContext() {
 		return context;
 	}
+
 }
