@@ -1,27 +1,20 @@
 package ch.hszt.mdp.chatplus.gui;
 
-import java.awt.Component;
-import java.awt.Insets;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.net.UnknownHostException;
+import java.util.HashMap;
 import java.util.LinkedList;
 
 import javax.swing.GroupLayout;
-import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
+import javax.swing.JTabbedPane;
 import javax.swing.KeyStroke;
-import javax.swing.LayoutStyle;
-import javax.swing.ScrollPaneConstants;
 import javax.swing.WindowConstants;
 
 import ch.hszt.mdp.chatplus.logic.concrete.message.LoginMessage;
@@ -34,27 +27,22 @@ import ch.hszt.mdp.chatplus.logic.contract.context.IClientContext;
  * @author pascalbeyeler
  */
 public class ChatWindow extends JFrame implements IClientContext {
-	
+
 	private static final long serialVersionUID = -1671373001474835583L;
+	private JTabbedPane chatTabPane;
 	private JMenuItem connectItem;
 	private JMenuItem disconnectItem;
 	private JMenuItem exitItem;
 	private JMenu fileMenu;
 	private JPopupMenu jPopupMenu1;
 	private JMenuBar menubar;
-	private JTextArea messageDisplay;
-	private JScrollPane messageDisplayScroll;
-	private JTextArea messageWriting;
-	private JLabel messageWritingLabel;
-	private JScrollPane messageWritingScroll;
-	private JButton sendButton;
-	private JList userList;
-	private JScrollPane userListScroll;
 	private TcpServerPeer serverPeer;
 	private String serverIP;
 	private Integer serverPort;
 	private String username = null;
 	private LinkedList<String> users;
+	private HashMap<String, ChatTab> chatTabs = new HashMap<String, ChatTab>();
+	private javax.swing.JMenuItem enterBoardItem;
 
 	/** Creates new form ChatWindow */
 	public ChatWindow() {
@@ -63,7 +51,6 @@ public class ChatWindow extends JFrame implements IClientContext {
 		initComponents();
 	}
 
-	
 	/**
 	 * This method is called from within the constructor to initialize the form.
 	 * WARNING: Do NOT modify this code. The content of this method is always
@@ -73,60 +60,19 @@ public class ChatWindow extends JFrame implements IClientContext {
 	private void initComponents() {
 
 		jPopupMenu1 = new JPopupMenu();
-		messageDisplayScroll = new JScrollPane();
-		messageDisplay = new JTextArea();
-		messageDisplay.setMargin(new Insets(10, 10, 10, 10));
-		messageWritingScroll = new JScrollPane();
-		messageWriting = new JTextArea();
-		messageWriting.setMargin(new Insets(10, 10, 10, 10));
-		messageWritingLabel = new JLabel();
-		userListScroll = new JScrollPane();
-		userList = new JList();
-		sendButton = new JButton();
+		chatTabPane = new JTabbedPane();
 		menubar = new JMenuBar();
 		fileMenu = new JMenu();
 		connectItem = new JMenuItem();
 		disconnectItem = new JMenuItem();
+		enterBoardItem = new javax.swing.JMenuItem();
 		exitItem = new JMenuItem();
 
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-		setSize(670, 570);
+		setSize(675, 575);
 		setLocationRelativeTo(null);
 		setTitle("ChatPlus");
-
-		messageDisplay.setColumns(20);
-		messageDisplay.setRows(5);
-		messageDisplay.setEnabled(false);
-		messageDisplay.setEditable(false);
-		messageDisplay.setLineWrap(true);
-		messageDisplayScroll.setViewportView(messageDisplay);
-		messageDisplayScroll
-				.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-		messageDisplayScroll
-				.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-
-		messageWriting.setColumns(20);
-		messageWriting.setRows(5);
-		messageWriting.setEnabled(false);
-		messageWritingScroll.setViewportView(messageWriting);
-		messageWritingScroll
-				.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-		messageWritingScroll
-				.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-
-		messageWritingLabel.setText("Enter your message here");
-
-		userList.setToolTipText("Available users");
-		userList.setEnabled(false);
-		userListScroll.setViewportView(userList);
-
-		sendButton.setText("Send");
-		sendButton.setEnabled(false);
-		sendButton.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				sendButtonActionPerformed(evt);
-			}
-		});
+		setResizable(false);
 
 		fileMenu.setText("File");
 
@@ -155,6 +101,19 @@ public class ChatWindow extends JFrame implements IClientContext {
 		});
 		fileMenu.add(disconnectItem);
 
+		enterBoardItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(
+				java.awt.event.KeyEvent.VK_E,
+				java.awt.event.InputEvent.SHIFT_MASK
+						| java.awt.event.InputEvent.CTRL_MASK));
+		enterBoardItem.setText("Enter board");
+		enterBoardItem.setEnabled(false);
+		enterBoardItem.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				enterBoardItemActionPerformed(evt);
+			}
+		});
+		fileMenu.add(enterBoardItem);
+
 		exitItem.setText("Exit");
 		exitItem.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -169,109 +128,54 @@ public class ChatWindow extends JFrame implements IClientContext {
 
 		GroupLayout layout = new GroupLayout(getContentPane());
 		getContentPane().setLayout(layout);
-		layout
-				.setHorizontalGroup(layout
-						.createParallelGroup(GroupLayout.Alignment.LEADING)
-						.addGroup(
-								layout
-										.createSequentialGroup()
-										.addContainerGap()
-										.addGroup(
-												layout
-														.createParallelGroup(
-																GroupLayout.Alignment.LEADING)
-														.addGroup(
-																layout
-																		.createSequentialGroup()
-																		.addComponent(
-																				messageDisplayScroll,
-																				GroupLayout.PREFERRED_SIZE,
-																				455,
-																				GroupLayout.PREFERRED_SIZE)
-																		.addPreferredGap(
-																				LayoutStyle.ComponentPlacement.UNRELATED))
-														.addGroup(
-																layout
-																		.createSequentialGroup()
-																		.addComponent(
-																				messageWritingLabel)
-																		.addGap(
-																				257,
-																				257,
-																				257))
-														.addGroup(
-																GroupLayout.Alignment.TRAILING,
-																layout
-																		.createSequentialGroup()
-																		.addGroup(
-																				layout
-																						.createParallelGroup(
-																								GroupLayout.Alignment.TRAILING)
-																						.addComponent(
-																								sendButton)
-																						.addComponent(
-																								messageWritingScroll,
-																								GroupLayout.DEFAULT_SIZE,
-																								455,
-																								Short.MAX_VALUE))
-																		.addGap(
-																				12,
-																				12,
-																				12)))
-										.addPreferredGap(
-												LayoutStyle.ComponentPlacement.UNRELATED)
-										.addComponent(userListScroll,
-												GroupLayout.DEFAULT_SIZE, 179,
-												Short.MAX_VALUE)
-										.addContainerGap()));
-		layout
-				.setVerticalGroup(layout
-						.createParallelGroup(GroupLayout.Alignment.LEADING)
-						.addGroup(
-								layout
-										.createSequentialGroup()
-										.addContainerGap()
-										.addGroup(
-												layout
-														.createParallelGroup(
-																GroupLayout.Alignment.LEADING)
-														.addComponent(
-																userListScroll,
-																GroupLayout.DEFAULT_SIZE,
-																517,
-																Short.MAX_VALUE)
-														.addGroup(
-																layout
-																		.createSequentialGroup()
-																		.addComponent(
-																				messageDisplayScroll,
-																				GroupLayout.PREFERRED_SIZE,
-																				315,
-																				GroupLayout.PREFERRED_SIZE)
-																		.addPreferredGap(
-																				LayoutStyle.ComponentPlacement.UNRELATED)
-																		.addComponent(
-																				messageWritingLabel)
-																		.addPreferredGap(
-																				LayoutStyle.ComponentPlacement.RELATED)
-																		.addComponent(
-																				messageWritingScroll,
-																				GroupLayout.PREFERRED_SIZE,
-																				123,
-																				GroupLayout.PREFERRED_SIZE)
-																		.addPreferredGap(
-																				LayoutStyle.ComponentPlacement.RELATED,
-																				9,
-																				Short.MAX_VALUE)
-																		.addComponent(
-																				sendButton)))
-										.addContainerGap()));
+		layout.setHorizontalGroup(layout.createParallelGroup(
+				javax.swing.GroupLayout.Alignment.LEADING).addComponent(
+				chatTabPane, javax.swing.GroupLayout.PREFERRED_SIZE, 666,
+				javax.swing.GroupLayout.PREFERRED_SIZE));
+		layout.setVerticalGroup(layout.createParallelGroup(
+				javax.swing.GroupLayout.Alignment.LEADING).addComponent(
+				chatTabPane, javax.swing.GroupLayout.PREFERRED_SIZE, 555,
+				javax.swing.GroupLayout.PREFERRED_SIZE));
 
-		pack();
-	}// </editor-fold>
+	}
 
-	private void sendButtonActionPerformed(java.awt.event.ActionEvent evt) {
-		sendMessage(username, messageWriting.getText());
+	/**
+	 * Create Chat Tab
+	 * 
+	 * Add a new chat tab panel
+	 * 
+	 * @param tabName
+	 */
+
+	private void createChatTab(String tabName) {
+		ChatTab chatTabPanel = new ChatTab(this, tabName);
+		chatTabPane.addTab(tabName, chatTabPanel);
+		chatTabs.put(tabName, chatTabPanel);
+	}
+
+	/**
+	 * Remove Chat Tab
+	 * 
+	 * remove a chat tab panel
+	 * 
+	 * @param tabName
+	 */
+
+	private void removeChatTab(String tabName) {
+		chatTabPane.remove(chatTabs.get(tabName));
+		chatTabs.remove(tabName);
+	}
+
+	/**
+	 * Leave Board
+	 * 
+	 * Leave a board
+	 * 
+	 * @param boardName
+	 */
+
+	public void leaveBoard(String boardName) {
+		removeChatTab(boardName);
 	}
 
 	private void connectItemActionPerformed(java.awt.event.ActionEvent evt) {
@@ -284,6 +188,10 @@ public class ChatWindow extends JFrame implements IClientContext {
 
 	private void exitItemActionPerformed(java.awt.event.ActionEvent evt) {
 		System.exit(0);
+	}
+
+	private void enterBoardItemActionPerformed(java.awt.event.ActionEvent evt) {
+		displayEnterBoardDialog();
 	}
 
 	/**
@@ -311,10 +219,7 @@ public class ChatWindow extends JFrame implements IClientContext {
 	private final void disableElements() {
 		connectItem.setEnabled(true);
 		disconnectItem.setEnabled(false);
-		messageDisplay.setEnabled(false);
-		messageWriting.setEnabled(false);
-		sendButton.setEnabled(false);
-		userList.setEnabled(false);
+		enterBoardItem.setEnabled(false);
 	}
 
 	/**
@@ -328,10 +233,7 @@ public class ChatWindow extends JFrame implements IClientContext {
 	private final void enableElements() {
 		connectItem.setEnabled(false);
 		disconnectItem.setEnabled(true);
-		messageDisplay.setEnabled(true);
-		messageWriting.setEnabled(true);
-		sendButton.setEnabled(true);
-		userList.setEnabled(true);
+		enterBoardItem.setEnabled(true);
 	}
 
 	/**
@@ -363,6 +265,7 @@ public class ChatWindow extends JFrame implements IClientContext {
 							LoginMessage msg = new LoginMessage();
 							msg.setUsername(username);
 							serverPeer.send(msg);
+							createChatTab("Public");
 						} else {
 							System.out.println("not connected");
 						}
@@ -374,6 +277,35 @@ public class ChatWindow extends JFrame implements IClientContext {
 			}
 		});
 
+	}
+
+	/**
+	 * Display Enter Board Dialog
+	 * 
+	 * Show the dialog to enter a board name
+	 */
+
+	public void displayEnterBoardDialog() {
+		java.awt.EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				final EnterBoardDialog dialog = new EnterBoardDialog(
+						new JFrame(), true);
+				dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+					public void windowClosed(WindowEvent e) {
+
+						// retreive all the user input from the connection
+						// dialog
+						String boardName = dialog.getBoardName();
+
+						// create a new tab
+						createChatTab(boardName);
+
+					}
+
+				});
+				dialog.setVisible(true);
+			}
+		});
 	}
 
 	/**
@@ -426,9 +358,12 @@ public class ChatWindow extends JFrame implements IClientContext {
 
 	private void disconnectFromServer() {
 		serverPeer.Stop();
-		messageWriting.setText("");
-		messageDisplay.setText("");
 		disableElements();
+
+		// close all tabs
+		for (String chatTab : chatTabs.keySet()) {
+			removeChatTab(chatTab);
+		}
 	}
 
 	/**
@@ -436,19 +371,16 @@ public class ChatWindow extends JFrame implements IClientContext {
 	 * 
 	 * Send a message to the server
 	 * 
-	 * @param sender
 	 * @param message
 	 * @return void
 	 */
 
-	private final void sendMessage(String sender, String message) {
+	public void sendMessage(String message) {
 		// add the message to the queue
 		SimpleMessage msg = new SimpleMessage();
 		msg.setMessage(message);
-		msg.setSender(sender);
+		msg.setSender(username);
 		serverPeer.send(msg);
-
-		messageWriting.setText("");
 	}
 
 	/**
@@ -461,29 +393,27 @@ public class ChatWindow extends JFrame implements IClientContext {
 
 	@Override
 	public void displayChatMessage(String sender, String message) {
-		messageDisplay.append(sender + " says:\t" + message + "\n");
+		// messageDisplay.append(sender + " says:\t" + message + "\n");
 	}
-
 
 	@Override
 	public void notifyUserStatusChange(String username, boolean isOnline) {
-		if(username.equals(this.username) || this.username == null)
-			return;
-		if(!isOnline)		
-			users.remove(username);
-		else if(!users.contains(username))
-			users.add(username);
-		
-		userList.setListData(users.toArray());
+		/*
+		 * if(username.equals(this.username) || this.username == null) return;
+		 * if(!isOnline) users.remove(username); else
+		 * if(!users.contains(username)) users.add(username);
+		 * 
+		 * userList.setListData(users.toArray());
+		 */
 	}
-
 
 	@Override
 	public void processLoginResponse(String username, boolean isAuthorised) {
-		if(isAuthorised)
-		{			
+		if (isAuthorised) {
 			this.username = username;
-			JOptionPane.showMessageDialog(null, "Your username is: "+ username, "Logged in", JOptionPane.OK_OPTION);
+			JOptionPane.showMessageDialog(null,
+					"Your username is: " + username, "Logged in",
+					JOptionPane.OK_OPTION);
 			enableElements();
 		}
 	}
