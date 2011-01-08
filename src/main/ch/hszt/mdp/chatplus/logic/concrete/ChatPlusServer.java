@@ -81,8 +81,10 @@ public class ChatPlusServer implements IServerContext, Runnable {
 					}
 					for (IClientPeer client : threadSafeClientPeerQueue)
 					{
-						for(UserStatusMessage msg : logOfMsgList)
+						for(UserStatusMessage msg : logOfMsgList) {
+							System.out.println("Server sending message");
 							client.send(msg);
+						}
 					}
 				}
 				try {
@@ -99,7 +101,8 @@ public class ChatPlusServer implements IServerContext, Runnable {
 	}
 
 	@Override
-	public void publishSimpleMessage(String sender, String message) {		
+	public void publishSimpleMessage(String sender, String message) {
+		System.out.println("Server publishing message");
 		SimpleMessage msg = new SimpleMessage();
 		msg.setSender(sender);
 		msg.setMessage(message);
@@ -196,6 +199,7 @@ public class ChatPlusServer implements IServerContext, Runnable {
 
 
 	public void publishBoardMessage(String sender, String message, String boardName) {
+		System.out.println("Server publishing board message");
 		SimpleMessage msg = new SimpleMessage();
 		msg.setSender(sender);
 		msg.setMessage(message);
@@ -209,6 +213,7 @@ public class ChatPlusServer implements IServerContext, Runnable {
 					ClientInformation info = clientPeerInformationTable.get(uuid);
 					if(info != null && info.peer != null)
 					{ 
+						System.out.println("Server sending board message");
 						info.peer.send(msg);					
 					}
 				}
@@ -249,6 +254,7 @@ public class ChatPlusServer implements IServerContext, Runnable {
 				BoardUserList boardListMsg = new BoardUserList();
 				boardListMsg.setBoardName(boardName);
 				boardListMsg.setUsernames(usernames);
+				clientSource.send(boardListMsg);
 			}
 			else
 			{

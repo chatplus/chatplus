@@ -18,6 +18,7 @@ import javax.swing.KeyStroke;
 import javax.swing.WindowConstants;
 
 import ch.hszt.mdp.chatplus.logic.concrete.message.LoginMessage;
+import ch.hszt.mdp.chatplus.logic.concrete.message.ManageBoardMessage;
 import ch.hszt.mdp.chatplus.logic.concrete.message.SimpleMessage;
 import ch.hszt.mdp.chatplus.logic.concrete.TcpServerPeer;
 import ch.hszt.mdp.chatplus.logic.contract.context.IClientContext;
@@ -146,9 +147,19 @@ public class ChatWindow extends JFrame implements IClientContext {
 	 */
 
 	private void createChatTab(String tabName) {
+		
+		//add the new tab to the GUI
 		ChatTab chatTabPanel = new ChatTab(this, tabName);
 		chatTabPane.addTab(tabName, chatTabPanel);
 		chatTabs.put(tabName, chatTabPanel);
+		
+		//notify the server that a new board has been created
+		ManageBoardMessage manageMsg = new ManageBoardMessage();
+		manageMsg.setBoardName(tabName);
+		manageMsg.setUsername(username);
+		manageMsg.setJoin(true);
+		serverPeer.send(manageMsg);
+		
 	}
 
 	/**
@@ -160,8 +171,18 @@ public class ChatWindow extends JFrame implements IClientContext {
 	 */
 
 	private void removeChatTab(String tabName) {
+		
+		//remove the tab
 		chatTabPane.remove(chatTabs.get(tabName));
 		chatTabs.remove(tabName);
+		
+		//notify the server that a user has left the board
+		ManageBoardMessage manageMsg = new ManageBoardMessage();
+		manageMsg.setBoardName(tabName);
+		manageMsg.setUsername(username);
+		manageMsg.setJoin(false);
+		serverPeer.send(manageMsg);
+		
 	}
 
 	/**
@@ -263,6 +284,7 @@ public class ChatWindow extends JFrame implements IClientContext {
 							LoginMessage msg = new LoginMessage();
 							msg.setUsername(username);
 							serverPeer.send(msg);
+
 							createChatTab("Public");
 						} else {
 							System.out.println("not connected");
@@ -370,14 +392,18 @@ public class ChatWindow extends JFrame implements IClientContext {
 	 * Send a message to the server
 	 * 
 	 * @param message
+	 * @param board
 	 * @return void
 	 */
 
-	public void sendMessage(String message) {
+	public void sendMessage(String message, String board) {
 		// add the message to the queue
 		SimpleMessage msg = new SimpleMessage();
 		msg.setMessage(message);
 		msg.setSender(username);
+		if(!board.equals("Public")) {
+			msg.setBoard(board);
+		}
 		serverPeer.send(msg);
 	}
 
@@ -391,7 +417,7 @@ public class ChatWindow extends JFrame implements IClientContext {
 
 	@Override
 	public void displayChatMessage(String sender, String message) {
-		displayChatMessage(sender, message, "public");
+		displayChatMessage(sender, message, "Public");
 	}
 
 	@Override

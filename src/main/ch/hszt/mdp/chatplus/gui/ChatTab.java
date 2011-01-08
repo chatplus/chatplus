@@ -119,7 +119,8 @@ public class ChatTab extends JPanel{
 	}
 	
 	private void sendButtonActionPerformed(java.awt.event.ActionEvent evt) {
-		chatWindow.sendMessage(messageWriting.getText());
+		chatWindow.sendMessage(messageWriting.getText(), tabName);
+		messageWriting.setText("");
 	}
 	
 	private void leaveBoardButtonActionPerformed(java.awt.event.ActionEvent evt) {
