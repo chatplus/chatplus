@@ -7,6 +7,7 @@ import ch.hszt.mdp.chatplus.logic.contract.peer.IServerPeer;
 public class UserStatusMessage implements IServerMessage {
 
 	private String username;
+	private String board = null;
 	private boolean isLoggedIn;
 
 	public String getUsername() {
@@ -15,6 +16,13 @@ public class UserStatusMessage implements IServerMessage {
 
 	public void setUsername(String username) {
 		this.username = username;
+	}	
+	
+	public String getBoard() {
+		return board;
+	}
+	public void setBoard(String board) {
+		this.board = board;
 	}
 	
 	public boolean getIsLoggedIn() {
@@ -33,7 +41,10 @@ public class UserStatusMessage implements IServerMessage {
 
 	@Override
 	public void process(IClientContext context) {
-		context.notifyUserStatusChange(username, isLoggedIn);	
+		if(board == null)
+			context.notifyUserStatusChange(username, isLoggedIn);
+		else
+			context.notifyUserStatusChange(board, username, isLoggedIn);			
 	}
 
 	@Override

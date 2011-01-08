@@ -11,6 +11,7 @@ public class SimpleMessage implements IClientMessage, IServerMessage {
 
 	String sender;
 	String message;
+	String board = null;
 
 	public String getSender() {
 		return sender;
@@ -24,13 +25,25 @@ public class SimpleMessage implements IClientMessage, IServerMessage {
 	public void setMessage(String message) {
 		this.message = message;
 	}
+	public String getBoard() {
+		return board;
+	}
+	public void setBoard(String board) {
+		this.board = board;
+	}
 	@Override
 	public void process(IServerContext context) {
-		context.publishSimpleMessage(sender, message);
+		if(board == null)
+			context.publishSimpleMessage(sender, message);
+		else
+			context.publishBoardMessage(sender, message, board);
 	}
 	@Override
 	public void process(IClientContext context) {
-		context.displayChatMessage(sender, message);
+		if(board == null)
+			context.displayChatMessage(sender, message);
+		else
+			context.displayChatMessage(sender, message, board);	
 	}
 	
 	private IServerPeer serverSource;

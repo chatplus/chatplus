@@ -13,6 +13,7 @@ import java.util.Random;
 import java.util.Scanner;
 import java.util.UUID;
 
+import ch.hszt.mdp.chatplus.logic.concrete.message.BoardUserList;
 import ch.hszt.mdp.chatplus.logic.concrete.message.LoginMessage;
 import ch.hszt.mdp.chatplus.logic.concrete.message.SimpleMessage;
 import ch.hszt.mdp.chatplus.logic.concrete.message.UserStatusMessage;
@@ -39,13 +40,13 @@ public class ChatPlusServer implements IServerContext, Runnable {
 	private final Dictionary<String,LinkedList<UUID>> boardRegistration = new Hashtable<String,LinkedList<UUID>>();	
 	private final Dictionary<UUID,ClientInformation> clientPeerInformationTable = new Hashtable<UUID,ClientInformation>();
 	private final Queue<IClientPeer> threadSafeClientPeerQueue = new LinkedList<IClientPeer>();
+	
 	private final Object lock = new Object();
 	private boolean isInterrupted = false;
 
 	private ServerSocket server;
 
 	private class ClientPeerQueueManager implements Runnable {
-
 		@Override
 		public void run() {
 			while (!isInterrupted) {
@@ -70,6 +71,11 @@ public class ChatPlusServer implements IServerContext, Runnable {
 						}
 						System.out.println("watcher removing dead client");
 						usernames.remove(info.userName);
+						for(String boardName : info.currentBoards)
+						{
+							if(boardRegistration.get(boardName) != null)
+								boardRegistration.get(boardName).remove(client.getUUID());
+						}
 						clientPeerInformationTable.remove(client.getUUID());
 						threadSafeClientPeerQueue.remove(client);							
 					}
@@ -85,7 +91,6 @@ public class ChatPlusServer implements IServerContext, Runnable {
 				}
 			}
 		}
-
 	}
 	
 	public ChatPlusServer(int serverPort) throws IOException {
@@ -125,7 +130,7 @@ public class ChatPlusServer implements IServerContext, Runnable {
 					synchronized (lock) {
 						System.out.println("start info");
 						System.out.println("uuid " + clientPeer.getUUID());
-						clientPeerInformationTable.put(clientPeer.getUUID(), new ClientInformation());
+						clientPeerInformationTable.put(clientPeer.getUUID(), new ClientInformation(clientPeer));
 						System.out.println("added info");
 						threadSafeClientPeerQueue.add(clientPeer);
 						System.out.println("Added client.");
@@ -187,5 +192,84 @@ public class ChatPlusServer implements IServerContext, Runnable {
 			for (IClientPeer client : threadSafeClientPeerQueue)
 				client.send(statusMsg);
 		}
-	}	
+	}
+
+
+	public void publishBoardMessage(String sender, String message, String boardName) {
+		SimpleMessage msg = new SimpleMessage();
+		msg.setSender(sender);
+		msg.setMessage(message);
+		msg.setBoard(boardName);
+		synchronized (lock) {
+			LinkedList<UUID> list = null;
+			if((list = boardRegistration.get(boardName)) != null)
+			{
+				for (UUID uuid : list)
+				{
+					ClientInformation info = clientPeerInformationTable.get(uuid);
+					if(info != null && info.peer != null)
+					{ 
+						info.peer.send(msg);					
+					}
+				}
+			}
+		}
+	}
+	public void manageBoardSubscription(String username, String boardName, boolean join, IClientPeer clientSource) {
+		synchronized (lock) {
+			LinkedList<UUID> list = boardRegistration.get(boardName);
+			if(join)
+			{
+				if(list == null)
+				{
+					list = new LinkedList<UUID>();
+					boardRegistration.put(boardName, list);
+				}
+				list.add(clientSource.getUUID());
+				clientPeerInformationTable.get(clientSource.getUUID()).currentBoards.add(boardName);
+				
+				UserStatusMessage msg = new UserStatusMessage();
+				msg.setBoard(boardName);
+				msg.setUsername(username);
+				msg.setIsLoggedIn(join);
+				
+				LinkedList<String> usernames = new LinkedList<String>();
+				
+				for(UUID uuid : list){
+					if(uuid != clientSource.getUUID()){
+						ClientInformation info = clientPeerInformationTable.get(uuid);
+						if(info != null)
+						{
+							info.peer.send(msg);
+							usernames.add(info.userName);
+						}
+					}
+				}				
+
+				BoardUserList boardListMsg = new BoardUserList();
+				boardListMsg.setBoardName(boardName);
+				boardListMsg.setUsernames(usernames);
+			}
+			else
+			{
+				if(list != null)
+				{					
+					list.remove(clientSource.getUUID());
+					UserStatusMessage status = new UserStatusMessage();
+					status.setBoard(boardName);
+					status.setIsLoggedIn(join);
+					status.setUsername(username);
+					
+					for(UUID uuid : list){
+						if(uuid != clientSource.getUUID()){
+							ClientInformation info = clientPeerInformationTable.get(uuid);
+							if(info != null)
+								info.peer.send(status);
+						}
+					}
+				}
+				clientPeerInformationTable.get(clientSource.getUUID()).currentBoards.remove(boardName);			
+			}
+		}
+	}
 }
