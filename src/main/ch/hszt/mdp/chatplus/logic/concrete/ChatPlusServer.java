@@ -3,10 +3,15 @@ package ch.hszt.mdp.chatplus.logic.concrete;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Dictionary;
+import java.util.Enumeration;
+import java.util.Hashtable;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 import java.util.Random;
 import java.util.Scanner;
+import java.util.UUID;
 
 import ch.hszt.mdp.chatplus.logic.concrete.message.LoginMessage;
 import ch.hszt.mdp.chatplus.logic.concrete.message.SimpleMessage;
@@ -16,8 +21,6 @@ import ch.hszt.mdp.chatplus.logic.contract.peer.IClientPeer;
 
 
 /***
- * A demo chatplus server to test the abstract communication behaviour
- * 
  * @author sfrick
  */
 
@@ -32,8 +35,10 @@ public class ChatPlusServer implements IServerContext, Runnable {
 	public void setServerPort(int serverPort) {
 		this.serverPort = serverPort;
 	}
-	private final LinkedList<String> usernames = new LinkedList<String>();
-	private final Queue<ClientPeerWrapper> threadSafeClientPeerQueue = new LinkedList<ClientPeerWrapper>();
+	private final Dictionary<String,UUID> usernames = new Hashtable<String,UUID>();	
+	private final Dictionary<String,LinkedList<UUID>> boardRegistration = new Hashtable<String,LinkedList<UUID>>();	
+	private final Dictionary<UUID,ClientInformation> clientPeerInformationTable = new Hashtable<UUID,ClientInformation>();
+	private final Queue<IClientPeer> threadSafeClientPeerQueue = new LinkedList<IClientPeer>();
 	private final Object lock = new Object();
 	private boolean isInterrupted = false;
 
@@ -45,21 +50,33 @@ public class ChatPlusServer implements IServerContext, Runnable {
 		public void run() {
 			while (!isInterrupted) {
 				System.out.println("watcher running");
-				LinkedList<ClientPeerWrapper> list = new LinkedList<ClientPeerWrapper>();
+				LinkedList<IClientPeer> list = new LinkedList<IClientPeer>();
+				LinkedList<UserStatusMessage> logOfMsgList = new LinkedList<UserStatusMessage>();
 				synchronized (lock) {
-					for (ClientPeerWrapper client : threadSafeClientPeerQueue)
+					for (IClientPeer client : threadSafeClientPeerQueue)
 					{
-						if(!client.peer.isAlive())		
+						if(!client.isAlive())		
 							list.add(client);		
 					}
-					for (ClientPeerWrapper client : list)
+					for (IClientPeer client : list)
 					{
-						if(client.isLoggedIn)
+						ClientInformation info = clientPeerInformationTable.get(client.getUUID());					
+						if(info.isLoggedIn)
 						{
-							//new logout msg
+							UserStatusMessage statusMsg = new UserStatusMessage();
+							statusMsg.setUsername(info.userName);
+							statusMsg.setIsLoggedIn(false);
+							logOfMsgList.add(statusMsg);
 						}
 						System.out.println("watcher removing dead client");
-						threadSafeClientPeerQueue.remove(client);								
+						usernames.remove(info.userName);
+						clientPeerInformationTable.remove(client.getUUID());
+						threadSafeClientPeerQueue.remove(client);							
+					}
+					for (IClientPeer client : threadSafeClientPeerQueue)
+					{
+						for(UserStatusMessage msg : logOfMsgList)
+							client.send(msg);
 					}
 				}
 				try {
@@ -82,8 +99,8 @@ public class ChatPlusServer implements IServerContext, Runnable {
 		msg.setSender(sender);
 		msg.setMessage(message);
 		synchronized (lock) {
-			for (ClientPeerWrapper client : threadSafeClientPeerQueue)
-				client.peer.send(msg);
+			for (IClientPeer client : threadSafeClientPeerQueue)
+				client.send(msg);
 		}
 	}
 
@@ -97,16 +114,21 @@ public class ChatPlusServer implements IServerContext, Runnable {
 				try {
 					client = server.accept();
 				} catch (IOException e) {
+					System.out.println("Ex.");
 				}
 
 				if (client != null) {
+					System.out.println("Client != null");
 					TcpClientPeer clientPeer = new TcpClientPeer();
 					clientPeer.setClientSocket(client);
 					clientPeer.setContext(this);
 					synchronized (lock) {
-						ClientPeerWrapper clientWrapper = new ClientPeerWrapper();
-						clientWrapper.peer = clientPeer;						
-						threadSafeClientPeerQueue.add(clientWrapper);
+						System.out.println("start info");
+						System.out.println("uuid " + clientPeer.getUUID());
+						clientPeerInformationTable.put(clientPeer.getUUID(), new ClientInformation());
+						System.out.println("added info");
+						threadSafeClientPeerQueue.add(clientPeer);
+						System.out.println("Added client.");
 					}
 					clientPeer.Start();
 				}
@@ -123,33 +145,47 @@ public class ChatPlusServer implements IServerContext, Runnable {
 		in.nextLine();
 	}
 
-	private String getValidUsername(String username)
+	private String getValidUsername(String username, UUID uuid)
 	{
 		synchronized (lock) {
-			if(usernames.contains(username))
-				return getValidUsername(username + "_" + (new Random()).nextInt(100));
+			if(usernames.get(username) != null)
+				return getValidUsername(username + "_" + (new Random()).nextInt(100),uuid);
 			else
 			{
-				usernames.add(username);
+				usernames.put(username,uuid);
 				return username;
 			}
 		}
 	}
+	@SuppressWarnings("unchecked")
 	@Override
 	public void requestLoginAuthorisation(String username, IClientPeer clientSource) {
 		LoginMessage msg = new LoginMessage();
 		msg.setAuthorised(true);
-		msg.setUsername(getValidUsername(username));
+		String newUsername = getValidUsername(username,clientSource.getUUID());
+		msg.setUsername(newUsername);		
 		synchronized (lock) {
-			msg.setUsernames((LinkedList<String>)usernames.clone());
+			System.out.println("Getting info.");
+			ClientInformation info = clientPeerInformationTable.get(clientSource.getUUID());
+			info.isLoggedIn = true;
+			info.userName = newUsername;
+			System.out.println("Looping usernames info.");
+			LinkedList<String> names = new LinkedList<String>();
+			for (Enumeration<String> e = usernames.keys() ; e.hasMoreElements() ;) {
+				names.add(e.nextElement());
+			}
+			msg.setUsernames(names);
 		}
+		System.out.println("Sending msg to new client.");
 		clientSource.send(msg);
 
 		UserStatusMessage statusMsg = new UserStatusMessage();
 		statusMsg.setUsername(msg.getUsername());
+		statusMsg.setIsLoggedIn(true);
+		System.out.println("Sending user status (login) to all clients.");
 		synchronized (lock) {
-			for (ClientPeerWrapper client : threadSafeClientPeerQueue)
-				client.peer.send(statusMsg);
+			for (IClientPeer client : threadSafeClientPeerQueue)
+				client.send(statusMsg);
 		}
 	}	
 }

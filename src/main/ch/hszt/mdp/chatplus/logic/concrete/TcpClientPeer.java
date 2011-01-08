@@ -6,6 +6,7 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.UUID;
 
 import ch.hszt.mdp.chatplus.logic.contract.context.IServerContext;
 import ch.hszt.mdp.chatplus.logic.contract.message.IClientMessage;
@@ -14,6 +15,7 @@ import ch.hszt.mdp.chatplus.logic.contract.peer.IClientPeer;
 
 public class TcpClientPeer implements IClientPeer {
 
+	private UUID peerUUID;
 	private final Queue<IServerMessage> threadSafeMessageQueue = new LinkedList<IServerMessage>();
 	private final Object lock = new Object();
 	private boolean isInterrupted = false;
@@ -23,7 +25,8 @@ public class TcpClientPeer implements IClientPeer {
 		private IServerContext context;
 		private IClientPeer parent;
 
-		public ClientRx(IServerContext context, InputStream stream, IClientPeer parent) {
+		public ClientRx(IServerContext context, InputStream stream,
+				IClientPeer parent) {
 			this.stream = stream;
 			this.context = context;
 			this.parent = parent;
@@ -126,10 +129,34 @@ public class TcpClientPeer implements IClientPeer {
 		rx.start();
 		tx.start();
 	}
-	
-	public boolean isAlive()
-	{
+
+	public boolean isAlive() {
 		return !isInterrupted && clientSocket.isConnected();
+	}
+
+	@Override
+	public UUID getUUID() {
+		return peerUUID;
+	}
+
+	public TcpClientPeer() {
+		peerUUID = UUID.randomUUID();
+		System.out.println(peerUUID);
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o)
+			return true;
+		if (!(o instanceof TcpClientPeer))
+			return false;
+		TcpClientPeer otherPeer = (TcpClientPeer) o;
+		return otherPeer.getUUID().equals(peerUUID);
+	}
+
+	@Override
+	public int hashCode() {
+		return peerUUID.hashCode();
 	}
 
 }
