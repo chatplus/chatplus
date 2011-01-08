@@ -40,14 +40,12 @@ public class ChatWindow extends JFrame implements IClientContext {
 	private String serverIP;
 	private Integer serverPort;
 	private String username = null;
-	private LinkedList<String> users;
 	private HashMap<String, ChatTab> chatTabs = new HashMap<String, ChatTab>();
 	private javax.swing.JMenuItem enterBoardItem;
 
 	/** Creates new form ChatWindow */
 	public ChatWindow() {
 
-		users = new LinkedList<String>();
 		initComponents();
 	}
 
@@ -393,18 +391,40 @@ public class ChatWindow extends JFrame implements IClientContext {
 
 	@Override
 	public void displayChatMessage(String sender, String message) {
-		// messageDisplay.append(sender + " says:\t" + message + "\n");
+		displayChatMessage(sender, message, "public");
+	}
+
+	@Override
+	public void displayChatMessage(String sender, String message,
+			String boardName) {
+
+		ChatTab chatTab = chatTabs.get(boardName);
+		if (chatTab != null) {
+			chatTab.displayChatMessage(sender, message);
+		}
 	}
 
 	@Override
 	public void notifyUserStatusChange(String username, boolean isOnline) {
-		/*
-		 * if(username.equals(this.username) || this.username == null) return;
-		 * if(!isOnline) users.remove(username); else
-		 * if(!users.contains(username)) users.add(username);
-		 * 
-		 * userList.setListData(users.toArray());
-		 */
+		
+		for (String chatTab : chatTabs.keySet()) {
+			notifyUserStatusChange(chatTab, username, isOnline);
+		}
+		
+	}
+
+	@Override
+	public void notifyUserStatusChange(String boardName, String username, boolean isOnline) {
+
+		if (username.equals(this.username) || this.username == null) {
+			return;
+		}
+
+		ChatTab chatTab = chatTabs.get(boardName);
+		if (chatTab != null) {
+			chatTab.notifyUserStatusChange(username, isOnline);
+		}
+
 	}
 
 	@Override

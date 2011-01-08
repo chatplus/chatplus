@@ -1,5 +1,7 @@
 package ch.hszt.mdp.chatplus.gui;
 
+import java.util.LinkedList;
+
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -23,6 +25,7 @@ public class ChatTab extends JPanel{
 	private String tabName;
 	private ChatWindow chatWindow;
 	private JButton leaveBoardButton;
+	private LinkedList<String> users = new LinkedList<String>();
 	
 	public ChatTab(ChatWindow chatWindow, String tabName) {
 		this.chatWindow = chatWindow;
@@ -135,5 +138,21 @@ public class ChatTab extends JPanel{
 	public void displayChatMessage(String sender, String message) {
 		messageDisplay.append(sender + " says:\t" + message + "\n");
 	}	
+	
+	
+
+	public void notifyUserStatusChange(String username,
+			boolean isOnline) {
+		
+		if(!isOnline) {
+			users.remove(username);
+		} else {
+			if(!users.contains(username)) {
+				users.add(username);
+			}
+		}
+		userList.setListData(users.toArray());
+	
+	}
 	
 }
