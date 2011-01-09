@@ -13,10 +13,14 @@ import java.util.List;
 public interface IClientContext {
 
 	public void displayChatMessage(String sender, String message);
-	public void displayChatMessage(String sender, String message, String boardName);
-	
+
+	public void displayChatMessage(String sender, String message,
+			String boardName);
+
 	public void notifyUserStatusChange(String username, boolean isOnline);
-	public void notifyUserStatusChange(String boardName, String username, boolean isOnline);
-	
+
+	public void notifyUserStatusChange(String boardName, String username,
+			boolean isOnline);
+
 	public void processLoginResponse(String username, boolean isAuthorised);
 }

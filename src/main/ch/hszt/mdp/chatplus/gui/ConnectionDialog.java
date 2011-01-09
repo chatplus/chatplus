@@ -9,10 +9,6 @@ import javax.swing.JTextField;
 import javax.swing.LayoutStyle;
 import javax.swing.WindowConstants;
 
-/**
- * 
- * @author pascalbeyeler
- */
 public class ConnectionDialog extends JDialog {
 
 	private static final long serialVersionUID = -1598319247624850190L;
@@ -37,7 +33,6 @@ public class ConnectionDialog extends JDialog {
 	 */
 
 	private void initComponents() {
-		java.awt.GridBagConstraints gridBagConstraints;
 
 		serverIPLabel = new JLabel();
 		serverIPField = new JTextField();
@@ -56,6 +51,7 @@ public class ConnectionDialog extends JDialog {
 
 		serverIPLabel.setText("Server IP:");
 		serverPortLabel.setText("Server Port:");
+		serverPortField.setText("9999");
 		usernameLabel.setText("Username:");
 		connectButton.setText("Connect");
 		connectButton.addActionListener(new java.awt.event.ActionListener() {
@@ -175,7 +171,7 @@ public class ConnectionDialog extends JDialog {
 	public Integer getServerPort() {
 		try {
 			return Integer.parseInt(serverPortField.getText());
-		} catch(NumberFormatException e) {
+		} catch (NumberFormatException e) {
 			return 0;
 		}
 	}

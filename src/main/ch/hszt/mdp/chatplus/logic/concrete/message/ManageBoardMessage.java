@@ -4,13 +4,13 @@ import ch.hszt.mdp.chatplus.logic.contract.context.IServerContext;
 import ch.hszt.mdp.chatplus.logic.contract.message.IClientMessage;
 import ch.hszt.mdp.chatplus.logic.contract.peer.IClientPeer;
 
-public class ManageBoardMessage implements IClientMessage{
+public class ManageBoardMessage implements IClientMessage {
 
 	private IClientPeer peer;
-	
+
 	private String username, boardName;
 	private boolean join;
-	
+
 	public String getUsername() {
 		return username;
 	}

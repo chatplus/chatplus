@@ -16,10 +16,14 @@ public interface IServerContext {
 	 * Publishes a board chat message (e.g to other chatclients on the board
 	 */
 
-	public void publishBoardMessage(String sender, String message, String boardName);	
+	public void publishBoardMessage(String sender, String message,
+			String boardName);
+
 	public void publishSimpleMessage(String sender, String message);
 
-	public void manageBoardSubscription(String username, String boardName, boolean join, IClientPeer clientSource);
-	
-	public void requestLoginAuthorisation(String username, IClientPeer clientSource);
+	public void manageBoardSubscription(String username, String boardName,
+			boolean join, IClientPeer clientSource);
+
+	public void requestLoginAuthorisation(String username,
+			IClientPeer clientSource);
 }

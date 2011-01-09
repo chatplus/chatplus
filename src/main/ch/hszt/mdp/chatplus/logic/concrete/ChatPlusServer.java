@@ -7,7 +7,6 @@ import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Queue;
 import java.util.Random;
 import java.util.Scanner;
@@ -19,7 +18,6 @@ import ch.hszt.mdp.chatplus.logic.concrete.message.SimpleMessage;
 import ch.hszt.mdp.chatplus.logic.concrete.message.UserStatusMessage;
 import ch.hszt.mdp.chatplus.logic.contract.context.IServerContext;
 import ch.hszt.mdp.chatplus.logic.contract.peer.IClientPeer;
-
 
 /***
  * @author sfrick
@@ -36,11 +34,12 @@ public class ChatPlusServer implements IServerContext, Runnable {
 	public void setServerPort(int serverPort) {
 		this.serverPort = serverPort;
 	}
-	private final Dictionary<String,UUID> usernames = new Hashtable<String,UUID>();	
-	private final Dictionary<String,LinkedList<UUID>> boardRegistration = new Hashtable<String,LinkedList<UUID>>();	
-	private final Dictionary<UUID,ClientInformation> clientPeerInformationTable = new Hashtable<UUID,ClientInformation>();
+
+	private final Dictionary<String, UUID> usernames = new Hashtable<String, UUID>();
+	private final Dictionary<String, LinkedList<UUID>> boardRegistration = new Hashtable<String, LinkedList<UUID>>();
+	private final Dictionary<UUID, ClientInformation> clientPeerInformationTable = new Hashtable<UUID, ClientInformation>();
 	private final Queue<IClientPeer> threadSafeClientPeerQueue = new LinkedList<IClientPeer>();
-	
+
 	private final Object lock = new Object();
 	private boolean isInterrupted = false;
 
@@ -54,16 +53,14 @@ public class ChatPlusServer implements IServerContext, Runnable {
 				LinkedList<IClientPeer> list = new LinkedList<IClientPeer>();
 				LinkedList<UserStatusMessage> logOfMsgList = new LinkedList<UserStatusMessage>();
 				synchronized (lock) {
-					for (IClientPeer client : threadSafeClientPeerQueue)
-					{
-						if(!client.isAlive())		
-							list.add(client);		
+					for (IClientPeer client : threadSafeClientPeerQueue) {
+						if (!client.isAlive())
+							list.add(client);
 					}
-					for (IClientPeer client : list)
-					{
-						ClientInformation info = clientPeerInformationTable.get(client.getUUID());					
-						if(info.isLoggedIn)
-						{
+					for (IClientPeer client : list) {
+						ClientInformation info = clientPeerInformationTable
+								.get(client.getUUID());
+						if (info.isLoggedIn) {
 							UserStatusMessage statusMsg = new UserStatusMessage();
 							statusMsg.setUsername(info.userName);
 							statusMsg.setIsLoggedIn(false);
@@ -71,17 +68,16 @@ public class ChatPlusServer implements IServerContext, Runnable {
 						}
 						System.out.println("watcher removing dead client");
 						usernames.remove(info.userName);
-						for(String boardName : info.currentBoards)
-						{
-							if(boardRegistration.get(boardName) != null)
-								boardRegistration.get(boardName).remove(client.getUUID());
+						for (String boardName : info.currentBoards) {
+							if (boardRegistration.get(boardName) != null)
+								boardRegistration.get(boardName).remove(
+										client.getUUID());
 						}
 						clientPeerInformationTable.remove(client.getUUID());
-						threadSafeClientPeerQueue.remove(client);							
+						threadSafeClientPeerQueue.remove(client);
 					}
-					for (IClientPeer client : threadSafeClientPeerQueue)
-					{
-						for(UserStatusMessage msg : logOfMsgList) {
+					for (IClientPeer client : threadSafeClientPeerQueue) {
+						for (UserStatusMessage msg : logOfMsgList) {
 							System.out.println("Server sending message");
 							client.send(msg);
 						}
@@ -94,7 +90,7 @@ public class ChatPlusServer implements IServerContext, Runnable {
 			}
 		}
 	}
-	
+
 	public ChatPlusServer(int serverPort) throws IOException {
 		this.serverPort = serverPort;
 		server = new ServerSocket(serverPort);
@@ -133,7 +129,8 @@ public class ChatPlusServer implements IServerContext, Runnable {
 					synchronized (lock) {
 						System.out.println("start info");
 						System.out.println("uuid " + clientPeer.getUUID());
-						clientPeerInformationTable.put(clientPeer.getUUID(), new ClientInformation(clientPeer));
+						clientPeerInformationTable.put(clientPeer.getUUID(),
+								new ClientInformation(clientPeer));
 						System.out.println("added info");
 						threadSafeClientPeerQueue.add(clientPeer);
 						System.out.println("Added client.");
@@ -153,33 +150,35 @@ public class ChatPlusServer implements IServerContext, Runnable {
 		in.nextLine();
 	}
 
-	private String getValidUsername(String username, UUID uuid)
-	{
+	private String getValidUsername(String username, UUID uuid) {
 		synchronized (lock) {
-			if(usernames.get(username) != null)
-				return getValidUsername(username + "_" + (new Random()).nextInt(100),uuid);
-			else
-			{
-				usernames.put(username,uuid);
+			if (usernames.get(username) != null)
+				return getValidUsername(username + "_"
+						+ (new Random()).nextInt(100), uuid);
+			else {
+				usernames.put(username, uuid);
 				return username;
 			}
 		}
 	}
+
 	@SuppressWarnings("unchecked")
 	@Override
-	public void requestLoginAuthorisation(String username, IClientPeer clientSource) {
+	public void requestLoginAuthorisation(String username,
+			IClientPeer clientSource) {
 		LoginMessage msg = new LoginMessage();
 		msg.setAuthorised(true);
-		String newUsername = getValidUsername(username,clientSource.getUUID());
-		msg.setUsername(newUsername);		
+		String newUsername = getValidUsername(username, clientSource.getUUID());
+		msg.setUsername(newUsername);
 		synchronized (lock) {
 			System.out.println("Getting info.");
-			ClientInformation info = clientPeerInformationTable.get(clientSource.getUUID());
+			ClientInformation info = clientPeerInformationTable
+					.get(clientSource.getUUID());
 			info.isLoggedIn = true;
 			info.userName = newUsername;
 			System.out.println("Looping usernames info.");
 			LinkedList<String> names = new LinkedList<String>();
-			for (Enumeration<String> e = usernames.keys() ; e.hasMoreElements() ;) {
+			for (Enumeration<String> e = usernames.keys(); e.hasMoreElements();) {
 				names.add(e.nextElement());
 			}
 			msg.setUsernames(names);
@@ -197,8 +196,8 @@ public class ChatPlusServer implements IServerContext, Runnable {
 		}
 	}
 
-
-	public void publishBoardMessage(String sender, String message, String boardName) {
+	public void publishBoardMessage(String sender, String message,
+			String boardName) {
 		System.out.println("Server publishing board message");
 		SimpleMessage msg = new SimpleMessage();
 		msg.setSender(sender);
@@ -206,75 +205,73 @@ public class ChatPlusServer implements IServerContext, Runnable {
 		msg.setBoard(boardName);
 		synchronized (lock) {
 			LinkedList<UUID> list = null;
-			if((list = boardRegistration.get(boardName)) != null)
-			{
-				for (UUID uuid : list)
-				{
-					ClientInformation info = clientPeerInformationTable.get(uuid);
-					if(info != null && info.peer != null)
-					{ 
+			if ((list = boardRegistration.get(boardName)) != null) {
+				for (UUID uuid : list) {
+					ClientInformation info = clientPeerInformationTable
+							.get(uuid);
+					if (info != null && info.peer != null) {
 						System.out.println("Server sending board message");
-						info.peer.send(msg);					
+						info.peer.send(msg);
 					}
 				}
 			}
 		}
 	}
-	public void manageBoardSubscription(String username, String boardName, boolean join, IClientPeer clientSource) {
+
+	public void manageBoardSubscription(String username, String boardName,
+			boolean join, IClientPeer clientSource) {
 		synchronized (lock) {
 			LinkedList<UUID> list = boardRegistration.get(boardName);
-			if(join)
-			{
-				if(list == null)
-				{
+			if (join) {
+				if (list == null) {
 					list = new LinkedList<UUID>();
 					boardRegistration.put(boardName, list);
 				}
 				list.add(clientSource.getUUID());
-				clientPeerInformationTable.get(clientSource.getUUID()).currentBoards.add(boardName);
-				
+				clientPeerInformationTable.get(clientSource.getUUID()).currentBoards
+						.add(boardName);
+
 				UserStatusMessage msg = new UserStatusMessage();
 				msg.setBoard(boardName);
 				msg.setUsername(username);
 				msg.setIsLoggedIn(join);
-				
+
 				LinkedList<String> usernames = new LinkedList<String>();
-				
-				for(UUID uuid : list){
-					if(uuid != clientSource.getUUID()){
-						ClientInformation info = clientPeerInformationTable.get(uuid);
-						if(info != null)
-						{
+
+				for (UUID uuid : list) {
+					if (uuid != clientSource.getUUID()) {
+						ClientInformation info = clientPeerInformationTable
+								.get(uuid);
+						if (info != null) {
 							info.peer.send(msg);
 							usernames.add(info.userName);
 						}
 					}
-				}				
+				}
 
 				BoardUserList boardListMsg = new BoardUserList();
 				boardListMsg.setBoardName(boardName);
 				boardListMsg.setUsernames(usernames);
 				clientSource.send(boardListMsg);
-			}
-			else
-			{
-				if(list != null)
-				{					
+			} else {
+				if (list != null) {
 					list.remove(clientSource.getUUID());
 					UserStatusMessage status = new UserStatusMessage();
 					status.setBoard(boardName);
 					status.setIsLoggedIn(join);
 					status.setUsername(username);
-					
-					for(UUID uuid : list){
-						if(uuid != clientSource.getUUID()){
-							ClientInformation info = clientPeerInformationTable.get(uuid);
-							if(info != null)
+
+					for (UUID uuid : list) {
+						if (uuid != clientSource.getUUID()) {
+							ClientInformation info = clientPeerInformationTable
+									.get(uuid);
+							if (info != null)
 								info.peer.send(status);
 						}
 					}
 				}
-				clientPeerInformationTable.get(clientSource.getUUID()).currentBoards.remove(boardName);			
+				clientPeerInformationTable.get(clientSource.getUUID()).currentBoards
+						.remove(boardName);
 			}
 		}
 	}

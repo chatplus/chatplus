@@ -3,8 +3,7 @@ package ch.hszt.mdp.chatplus.gui;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.net.UnknownHostException;
-import java.util.HashMap;
-import java.util.LinkedList;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.swing.GroupLayout;
 import javax.swing.JFrame;
@@ -23,10 +22,6 @@ import ch.hszt.mdp.chatplus.logic.concrete.message.SimpleMessage;
 import ch.hszt.mdp.chatplus.logic.concrete.TcpServerPeer;
 import ch.hszt.mdp.chatplus.logic.contract.context.IClientContext;
 
-/**
- * 
- * @author pascalbeyeler
- */
 public class ChatWindow extends JFrame implements IClientContext {
 
 	private static final long serialVersionUID = -1671373001474835583L;
@@ -41,8 +36,9 @@ public class ChatWindow extends JFrame implements IClientContext {
 	private String serverIP;
 	private Integer serverPort;
 	private String username = null;
-	private HashMap<String, ChatTab> chatTabs = new HashMap<String, ChatTab>();
-	private javax.swing.JMenuItem enterBoardItem;
+	private ConcurrentHashMap<String, ChatTab> chatTabs = new ConcurrentHashMap<String, ChatTab>();
+	private JMenuItem enterBoardItem;
+	private final String windowTitle = "ChatPlus";
 
 	/** Creates new form ChatWindow */
 	public ChatWindow() {
@@ -64,14 +60,13 @@ public class ChatWindow extends JFrame implements IClientContext {
 		fileMenu = new JMenu();
 		connectItem = new JMenuItem();
 		disconnectItem = new JMenuItem();
-		enterBoardItem = new javax.swing.JMenuItem();
+		enterBoardItem = new JMenuItem();
 		exitItem = new JMenuItem();
 
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-		setSize(675, 575);
+		setTitle(windowTitle);
+		setSize(800, 600);
 		setLocationRelativeTo(null);
-		setTitle("ChatPlus");
-		setResizable(false);
 
 		fileMenu.setText("File");
 
@@ -100,7 +95,7 @@ public class ChatWindow extends JFrame implements IClientContext {
 		});
 		fileMenu.add(disconnectItem);
 
-		enterBoardItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(
+		enterBoardItem.setAccelerator(KeyStroke.getKeyStroke(
 				java.awt.event.KeyEvent.VK_E,
 				java.awt.event.InputEvent.SHIFT_MASK
 						| java.awt.event.InputEvent.CTRL_MASK));
@@ -128,73 +123,14 @@ public class ChatWindow extends JFrame implements IClientContext {
 		GroupLayout layout = new GroupLayout(getContentPane());
 		getContentPane().setLayout(layout);
 		layout.setHorizontalGroup(layout.createParallelGroup(
-				javax.swing.GroupLayout.Alignment.LEADING).addComponent(
-				chatTabPane, javax.swing.GroupLayout.PREFERRED_SIZE, 666,
-				javax.swing.GroupLayout.PREFERRED_SIZE));
+				GroupLayout.Alignment.LEADING).addComponent(chatTabPane,
+				GroupLayout.DEFAULT_SIZE, 766, Short.MAX_VALUE));
 		layout.setVerticalGroup(layout.createParallelGroup(
-				javax.swing.GroupLayout.Alignment.LEADING).addComponent(
-				chatTabPane, javax.swing.GroupLayout.PREFERRED_SIZE, 555,
-				javax.swing.GroupLayout.PREFERRED_SIZE));
+				GroupLayout.Alignment.LEADING).addComponent(chatTabPane,
+				GroupLayout.DEFAULT_SIZE, 581, Short.MAX_VALUE));
 
-	}
+		pack();
 
-	/**
-	 * Create Chat Tab
-	 * 
-	 * Add a new chat tab panel
-	 * 
-	 * @param tabName
-	 */
-
-	private void createChatTab(String tabName) {
-		
-		//add the new tab to the GUI
-		ChatTab chatTabPanel = new ChatTab(this, tabName);
-		chatTabPane.addTab(tabName, chatTabPanel);
-		chatTabs.put(tabName, chatTabPanel);
-		
-		//notify the server that a new board has been created
-		ManageBoardMessage manageMsg = new ManageBoardMessage();
-		manageMsg.setBoardName(tabName);
-		manageMsg.setUsername(username);
-		manageMsg.setJoin(true);
-		serverPeer.send(manageMsg);
-		
-	}
-
-	/**
-	 * Remove Chat Tab
-	 * 
-	 * remove a chat tab panel
-	 * 
-	 * @param tabName
-	 */
-
-	private void removeChatTab(String tabName) {
-		
-		//remove the tab
-		chatTabPane.remove(chatTabs.get(tabName));
-		chatTabs.remove(tabName);
-		
-		//notify the server that a user has left the board
-		ManageBoardMessage manageMsg = new ManageBoardMessage();
-		manageMsg.setBoardName(tabName);
-		manageMsg.setUsername(username);
-		manageMsg.setJoin(false);
-		serverPeer.send(manageMsg);
-		
-	}
-
-	/**
-	 * Leave Board
-	 * 
-	 * Leave a board
-	 * 
-	 * @param boardName
-	 */
-
-	public void leaveBoard(String boardName) {
-		removeChatTab(boardName);
 	}
 
 	private void connectItemActionPerformed(java.awt.event.ActionEvent evt) {
@@ -206,6 +142,7 @@ public class ChatWindow extends JFrame implements IClientContext {
 	}
 
 	private void exitItemActionPerformed(java.awt.event.ActionEvent evt) {
+		disconnectFromServer();
 		System.exit(0);
 	}
 
@@ -228,11 +165,69 @@ public class ChatWindow extends JFrame implements IClientContext {
 	}
 
 	/**
+	 * Create Chat Tab
+	 * 
+	 * Add a new chat tab panel
+	 * 
+	 * @param tabName
+	 */
+
+	private void createChatTab(String tabName) {
+
+		// add the new tab to the GUI
+		ChatTab chatTabPanel = new ChatTab(this, tabName);
+		chatTabPane.addTab(tabName, chatTabPanel);
+		chatTabPane.setSelectedComponent(chatTabPanel);
+		chatTabs.put(tabName, chatTabPanel);
+
+		// notify the server that a new board has been created
+		ManageBoardMessage manageMsg = new ManageBoardMessage();
+		manageMsg.setBoardName(tabName);
+		manageMsg.setUsername(username);
+		manageMsg.setJoin(true);
+		serverPeer.send(manageMsg);
+
+	}
+
+	/**
+	 * Remove Chat Tab
+	 * 
+	 * remove a chat tab panel
+	 * 
+	 * @param tabName
+	 */
+
+	private void removeChatTab(String tabName) {
+
+		// remove the tab
+		chatTabPane.remove(chatTabs.get(tabName));
+		chatTabs.remove(tabName);
+
+		// notify the server that a user has left the board
+		ManageBoardMessage manageMsg = new ManageBoardMessage();
+		manageMsg.setBoardName(tabName);
+		manageMsg.setUsername(username);
+		manageMsg.setJoin(false);
+		serverPeer.send(manageMsg);
+
+	}
+
+	/**
+	 * Leave Board
+	 * 
+	 * Leave a board
+	 * 
+	 * @param boardName
+	 */
+
+	public void leaveBoard(String boardName) {
+		removeChatTab(boardName);
+	}
+	
+	/**
 	 * Disable elements
 	 * 
 	 * Disables all interface elements
-	 * 
-	 * @return void
 	 */
 
 	private final void disableElements() {
@@ -245,8 +240,6 @@ public class ChatWindow extends JFrame implements IClientContext {
 	 * Enable elements
 	 * 
 	 * Enables all interface elements
-	 * 
-	 * @return void
 	 */
 
 	private final void enableElements() {
@@ -259,8 +252,6 @@ public class ChatWindow extends JFrame implements IClientContext {
 	 * Display connection dialog
 	 * 
 	 * Open the connection dialog
-	 * 
-	 * @return void
 	 */
 
 	public void displayConnectionDialog() {
@@ -335,7 +326,6 @@ public class ChatWindow extends JFrame implements IClientContext {
 	 * 
 	 * @param ip
 	 * @param port
-	 * @return void
 	 */
 
 	private boolean connectToServer(String ip, Integer port) {
@@ -372,8 +362,6 @@ public class ChatWindow extends JFrame implements IClientContext {
 	 * Disconnect from the server
 	 * 
 	 * Close the connection to the server
-	 * 
-	 * @return void
 	 */
 
 	private void disconnectFromServer() {
@@ -384,6 +372,9 @@ public class ChatWindow extends JFrame implements IClientContext {
 		for (String chatTab : chatTabs.keySet()) {
 			removeChatTab(chatTab);
 		}
+
+		// reset frame title
+		setTitle(windowTitle);
 	}
 
 	/**
@@ -393,7 +384,6 @@ public class ChatWindow extends JFrame implements IClientContext {
 	 * 
 	 * @param message
 	 * @param board
-	 * @return void
 	 */
 
 	public void sendMessage(String message, String board) {
@@ -401,7 +391,7 @@ public class ChatWindow extends JFrame implements IClientContext {
 		SimpleMessage msg = new SimpleMessage();
 		msg.setMessage(message);
 		msg.setSender(username);
-		if(!board.equals("Public")) {
+		if (!board.equals("Public")) {
 			msg.setBoard(board);
 		}
 		serverPeer.send(msg);
@@ -410,15 +400,26 @@ public class ChatWindow extends JFrame implements IClientContext {
 	/**
 	 * Display chat message
 	 * 
-	 * Display a message which was sent by the server
+	 * Display a message which was sent to the public board by the server
 	 * 
-	 * @return void
+	 * @param sender
+	 * @param message
 	 */
 
 	@Override
 	public void displayChatMessage(String sender, String message) {
 		displayChatMessage(sender, message, "Public");
 	}
+
+	/**
+	 * Display chat message
+	 * 
+	 * Display a message which was sent to a custom board by the server
+	 * 
+	 * @param sender
+	 * @param message
+	 * @param boardName
+	 */
 
 	@Override
 	public void displayChatMessage(String sender, String message,
@@ -430,17 +431,36 @@ public class ChatWindow extends JFrame implements IClientContext {
 		}
 	}
 
+	/**
+	 * Notify User Status Change
+	 * 
+	 * User state updates for public board
+	 * 
+	 * @param username
+	 * @param isOnline
+	 */
+
 	@Override
 	public void notifyUserStatusChange(String username, boolean isOnline) {
-		
+
 		for (String chatTab : chatTabs.keySet()) {
 			notifyUserStatusChange(chatTab, username, isOnline);
 		}
-		
+
 	}
 
+	/**
+	 * Notify User Status Change
+	 * 
+	 * User state updates for custom boards
+	 * 
+	 * @param username
+	 * @param isOnline
+	 */
+
 	@Override
-	public void notifyUserStatusChange(String boardName, String username, boolean isOnline) {
+	public void notifyUserStatusChange(String boardName, String username,
+			boolean isOnline) {
 
 		if (username.equals(this.username) || this.username == null) {
 			return;
@@ -453,13 +473,20 @@ public class ChatWindow extends JFrame implements IClientContext {
 
 	}
 
+	/**
+	 * Process Login Response
+	 * 
+	 * Actions after the user has logged in
+	 * 
+	 * @param username
+	 * @param isAuthorised
+	 */
+
 	@Override
 	public void processLoginResponse(String username, boolean isAuthorised) {
 		if (isAuthorised) {
 			this.username = username;
-			JOptionPane.showMessageDialog(null,
-					"Your username is: " + username, "Logged in",
-					JOptionPane.OK_OPTION);
+			setTitle(windowTitle + " (" + username + ")");
 			enableElements();
 		}
 	}

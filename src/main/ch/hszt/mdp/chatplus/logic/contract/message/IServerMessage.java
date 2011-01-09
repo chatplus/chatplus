@@ -14,5 +14,6 @@ public interface IServerMessage {
 	public void process(IClientContext context);
 
 	public IServerPeer getServerSource();
+
 	public void setServerSource(IServerPeer peer);
 }

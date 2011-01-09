@@ -9,8 +9,8 @@ public class ClientInformation {
 	public String userName;
 	public IClientPeer peer;
 	public LinkedList<String> currentBoards = new LinkedList<String>();
-	
-	public ClientInformation(IClientPeer peer){
+
+	public ClientInformation(IClientPeer peer) {
 		this.peer = peer;
 	}
 }

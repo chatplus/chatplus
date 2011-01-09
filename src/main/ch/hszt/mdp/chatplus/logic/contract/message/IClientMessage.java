@@ -13,5 +13,6 @@ public interface IClientMessage {
 	public void process(IServerContext context);
 
 	public IClientPeer getClientSource();
+
 	public void setClientSource(IClientPeer peer);
 }

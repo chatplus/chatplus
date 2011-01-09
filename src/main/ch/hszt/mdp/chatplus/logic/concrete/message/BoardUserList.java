@@ -10,7 +10,7 @@ public class BoardUserList implements IServerMessage {
 
 	LinkedList<String> usernames = new LinkedList<String>();
 	String boardName;
-	
+
 	public String getBoardName() {
 		return boardName;
 	}
@@ -35,8 +35,7 @@ public class BoardUserList implements IServerMessage {
 
 	@Override
 	public void process(IClientContext context) {
-		for(String username : usernames)
-		{
+		for (String username : usernames) {
 			context.notifyUserStatusChange(boardName, username, true);
 		}
 	}
@@ -44,7 +43,7 @@ public class BoardUserList implements IServerMessage {
 	@Override
 	public void setServerSource(IServerPeer peer) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }
