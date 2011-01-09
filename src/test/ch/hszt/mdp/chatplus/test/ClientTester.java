@@ -38,13 +38,13 @@ public class ClientTester implements IClientContext {
 	@Override
 	public void notifyUserStatusChange(String username, boolean isOnline) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void processLoginResponse(String username, boolean isAuthorised) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }

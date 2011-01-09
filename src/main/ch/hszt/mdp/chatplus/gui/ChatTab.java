@@ -155,9 +155,10 @@ public class ChatTab extends JPanel {
 			users.remove(username);
 			messageDisplay.append(username + " has left this board" + "\n");
 		} else {
-			if(!users.contains(username)) {
+			if (!users.contains(username)) {
 				users.add(username);
-				messageDisplay.append(username + " has entered this board" + "\n");
+				messageDisplay.append(username + " has entered this board"
+						+ "\n");
 			}
 		}
 		userList.setListData(users.toArray());

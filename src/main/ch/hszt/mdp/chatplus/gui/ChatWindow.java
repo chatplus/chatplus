@@ -223,7 +223,7 @@ public class ChatWindow extends JFrame implements IClientContext {
 	public void leaveBoard(String boardName) {
 		removeChatTab(boardName);
 	}
-	
+
 	/**
 	 * Disable elements
 	 * 
