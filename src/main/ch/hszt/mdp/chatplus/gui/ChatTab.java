@@ -1,5 +1,6 @@
 package ch.hszt.mdp.chatplus.gui;
 
+import java.awt.Rectangle;
 import java.util.LinkedList;
 
 import javax.swing.BorderFactory;
@@ -140,6 +141,7 @@ public class ChatTab extends JPanel {
 
 	public void displayChatMessage(String sender, String message) {
 		messageDisplay.append(sender + " says: " + message + "\n");
+		messageDisplay.scrollRectToVisible(new Rectangle(0,messageDisplay.getHeight()-2,1,1));
 	}
 
 	/**
@@ -153,11 +155,11 @@ public class ChatTab extends JPanel {
 
 		if (!isOnline) {
 			users.remove(username);
-			messageDisplay.append(username + " has left this board" + "\n");
+			messageDisplay.append(username + " left the board" + "\n");
 		} else {
 			if (!users.contains(username)) {
 				users.add(username);
-				messageDisplay.append(username + " has entered this board"
+				messageDisplay.append(username + " entered the board"
 						+ "\n");
 			}
 		}
