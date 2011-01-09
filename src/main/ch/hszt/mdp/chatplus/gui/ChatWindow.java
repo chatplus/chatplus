@@ -486,7 +486,7 @@ public class ChatWindow extends JFrame implements IClientContext {
 	public void processLoginResponse(String username, boolean isAuthorised) {
 		if (isAuthorised) {
 			this.username = username;
-			setTitle(windowTitle + " (" + username + ")");
+			setTitle(windowTitle + " (" + username + " connected to " + serverIP + ":" + serverPort +")");
 			enableElements();
 		}
 	}
