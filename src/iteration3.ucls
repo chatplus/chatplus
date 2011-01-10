@@ -1,0 +1,137 @@
+<class-diagram version="0.9.86" icons="true" always-add-relationships="false" generalizations="true" realizations="true" 
+  associations="true" dependencies="false" nesting-relationships="true">  
+  <class corner="BOTTOM_RIGHT" language="java" name="ch.hszt.mdp.chatplus.logic.concrete.ChatPlusServer" 
+    project="chatplus" file="/chatplus/src/main/ch/hszt/mdp/chatplus/logic/concrete/ChatPlusServer.java" binary="false">    
+    <position x="48" y="209" width="337" height="339"/>    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" 
+    name="ch.hszt.mdp.chatplus.logic.concrete.ChatPlusServer.ClientPeerQueueManager" project="chatplus" 
+    file="/chatplus/src/main/ch/hszt/mdp/chatplus/logic/concrete/ChatPlusServer.java" binary="false">    
+    <position x="48" y="588" width="169" height="67"/>    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="ch.hszt.mdp.chatplus.logic.concrete.ClientInformation" 
+    project="chatplus" file="/chatplus/src/main/ch/hszt/mdp/chatplus/logic/concrete/ClientInformation.java" 
+    binary="false">    
+    <position x="350" y="88" width="187" height="131"/>    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="ch.hszt.mdp.chatplus.logic.concrete.ClientPeerWrapper" 
+    project="chatplus" file="/chatplus/src/main/ch/hszt/mdp/chatplus/logic/concrete/ClientPeerWrapper.java" 
+    binary="false">    
+    <position x="455" y="290" width="157" height="99"/>    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="ch.hszt.mdp.chatplus.logic.concrete.ObjectReceiver" 
+    project="chatplus" file="/chatplus/src/main/ch/hszt/mdp/chatplus/logic/concrete/ObjectReceiver.java" binary="false">    
+    <position x="464" y="435" width="162" height="99"/>    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="ch.hszt.mdp.chatplus.logic.concrete.ObjectSender" 
+    project="chatplus" file="/chatplus/src/main/ch/hszt/mdp/chatplus/logic/concrete/ObjectSender.java" binary="false">    
+    <position x="113" y="97" width="163" height="99"/>    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="ch.hszt.mdp.chatplus.logic.concrete.TcpClientPeer" 
+    project="chatplus" file="/chatplus/src/main/ch/hszt/mdp/chatplus/logic/concrete/TcpClientPeer.java" binary="false">    
+    <position x="-29" y="-117" width="282" height="339"/>    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="ch.hszt.mdp.chatplus.logic.concrete.TcpClientPeer.ClientTx" 
+    project="chatplus" file="/chatplus/src/main/ch/hszt/mdp/chatplus/logic/concrete/TcpClientPeer.java" binary="false">    
+    <position x="-128" y="262" width="157" height="99"/>    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="ch.hszt.mdp.chatplus.logic.concrete.TcpClientPeer.ClientRx" 
+    project="chatplus" file="/chatplus/src/main/ch/hszt/mdp/chatplus/logic/concrete/TcpClientPeer.java" binary="false">    
+    <position x="69" y="262" width="255" height="131"/>    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="ch.hszt.mdp.chatplus.logic.concrete.TcpServerPeer.ServerRx" 
+    project="chatplus" file="/chatplus/src/main/ch/hszt/mdp/chatplus/logic/concrete/TcpServerPeer.java" binary="false">    
+    <position x="274" y="480" width="202" height="115"/>    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="ch.hszt.mdp.chatplus.logic.concrete.TcpServerPeer" 
+    project="chatplus" file="/chatplus/src/main/ch/hszt/mdp/chatplus/logic/concrete/TcpServerPeer.java" binary="false">    
+    <position x="395" y="69" width="275" height="371"/>    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="ch.hszt.mdp.chatplus.logic.concrete.TcpServerPeer.ServerTx" 
+    project="chatplus" file="/chatplus/src/main/ch/hszt/mdp/chatplus/logic/concrete/TcpServerPeer.java" binary="false">    
+    <position x="516" y="480" width="157" height="99"/>    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <nesting>    
+    <source project="chatplus" name="ch.hszt.mdp.chatplus.logic.concrete.TcpServerPeer" 
+      file="/chatplus/src/main/ch/hszt/mdp/chatplus/logic/concrete/TcpServerPeer.java" binary="false"/>    
+    <target project="chatplus" name="ch.hszt.mdp.chatplus.logic.concrete.TcpServerPeer.ServerRx" 
+      file="/chatplus/src/main/ch/hszt/mdp/chatplus/logic/concrete/TcpServerPeer.java" binary="false"/>  
+  </nesting>  
+  <nesting>    
+    <source project="chatplus" name="ch.hszt.mdp.chatplus.logic.concrete.TcpServerPeer" 
+      file="/chatplus/src/main/ch/hszt/mdp/chatplus/logic/concrete/TcpServerPeer.java" binary="false"/>    
+    <target project="chatplus" name="ch.hszt.mdp.chatplus.logic.concrete.TcpServerPeer.ServerTx" 
+      file="/chatplus/src/main/ch/hszt/mdp/chatplus/logic/concrete/TcpServerPeer.java" binary="false"/>  
+  </nesting>  
+  <nesting>    
+    <source project="chatplus" name="ch.hszt.mdp.chatplus.logic.concrete.TcpClientPeer" 
+      file="/chatplus/src/main/ch/hszt/mdp/chatplus/logic/concrete/TcpClientPeer.java" binary="false"/>    
+    <target project="chatplus" name="ch.hszt.mdp.chatplus.logic.concrete.TcpClientPeer.ClientTx" 
+      file="/chatplus/src/main/ch/hszt/mdp/chatplus/logic/concrete/TcpClientPeer.java" binary="false"/>  
+  </nesting>  
+  <nesting>    
+    <source project="chatplus" name="ch.hszt.mdp.chatplus.logic.concrete.TcpClientPeer" 
+      file="/chatplus/src/main/ch/hszt/mdp/chatplus/logic/concrete/TcpClientPeer.java" binary="false"/>    
+    <target project="chatplus" name="ch.hszt.mdp.chatplus.logic.concrete.TcpClientPeer.ClientRx" 
+      file="/chatplus/src/main/ch/hszt/mdp/chatplus/logic/concrete/TcpClientPeer.java" binary="false"/>  
+  </nesting>  
+  <nesting>    
+    <source project="chatplus" name="ch.hszt.mdp.chatplus.logic.concrete.ChatPlusServer" 
+      file="/chatplus/src/main/ch/hszt/mdp/chatplus/logic/concrete/ChatPlusServer.java" binary="false"/>    
+    <target project="chatplus" name="ch.hszt.mdp.chatplus.logic.concrete.ChatPlusServer.ClientPeerQueueManager" 
+      file="/chatplus/src/main/ch/hszt/mdp/chatplus/logic/concrete/ChatPlusServer.java" binary="false"/>  
+  </nesting>  
+  <classifier-display autosize="true" package="true" initial-value="false" signature="true" visibility="true">    
+    <attributes public="true" package="true" protected="true" private="true"/>    
+    <operations public="true" package="true" protected="true" private="true"/>  
+  </classifier-display>  
+  <association-display labels="true" multiplicity="true"/>
+</class-diagram>
