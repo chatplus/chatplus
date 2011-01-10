@@ -142,6 +142,8 @@ public class ChatTab extends JPanel {
 	public void displayChatMessage(String sender, String message) {
 		messageDisplay.append(sender + " says: " + message + "\n");
 		messageDisplay.scrollRectToVisible(new Rectangle(0,messageDisplay.getHeight()-2,1,1));
+	
+		
 	}
 
 	/**

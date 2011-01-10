@@ -1,5 +1,6 @@
 package ch.hszt.mdp.chatplus.gui;
 
+import java.awt.event.ActionEvent;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.net.UnknownHostException;
@@ -16,10 +17,10 @@ import javax.swing.JTabbedPane;
 import javax.swing.KeyStroke;
 import javax.swing.WindowConstants;
 
+import ch.hszt.mdp.chatplus.logic.concrete.TcpServerPeer;
 import ch.hszt.mdp.chatplus.logic.concrete.message.LoginMessage;
 import ch.hszt.mdp.chatplus.logic.concrete.message.ManageBoardMessage;
 import ch.hszt.mdp.chatplus.logic.concrete.message.SimpleMessage;
-import ch.hszt.mdp.chatplus.logic.concrete.TcpServerPeer;
 import ch.hszt.mdp.chatplus.logic.contract.context.IClientContext;
 
 public class ChatWindow extends JFrame implements IClientContext {
@@ -29,6 +30,7 @@ public class ChatWindow extends JFrame implements IClientContext {
 	private JMenuItem connectItem;
 	private JMenuItem disconnectItem;
 	private JMenuItem exitItem;
+	private JMenuItem logFileItem;
 	private JMenu fileMenu;
 	private JPopupMenu jPopupMenu1;
 	private JMenuBar menubar;
@@ -39,6 +41,7 @@ public class ChatWindow extends JFrame implements IClientContext {
 	private ConcurrentHashMap<String, ChatTab> chatTabs = new ConcurrentHashMap<String, ChatTab>();
 	private JMenuItem enterBoardItem;
 	private final String windowTitle = "ChatPlus";
+	public IOhandler io;
 
 	/** Creates new form ChatWindow */
 	public ChatWindow() {
@@ -61,8 +64,9 @@ public class ChatWindow extends JFrame implements IClientContext {
 		connectItem = new JMenuItem();
 		disconnectItem = new JMenuItem();
 		enterBoardItem = new JMenuItem();
+		logFileItem = new JMenuItem();
 		exitItem = new JMenuItem();
-
+		io = new IOhandler();
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		setTitle(windowTitle);
 		setSize(800, 600);
@@ -108,6 +112,20 @@ public class ChatWindow extends JFrame implements IClientContext {
 		});
 		fileMenu.add(enterBoardItem);
 
+		logFileItem.setAccelerator(KeyStroke.getKeyStroke(
+				java.awt.event.KeyEvent.VK_E,
+				java.awt.event.InputEvent.SHIFT_MASK
+						| java.awt.event.InputEvent.CTRL_MASK));
+		logFileItem.setText("Log File");
+		logFileItem.setEnabled(false);
+		logFileItem.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				logFileActionPerformed(evt);
+			}
+		});
+		
+		fileMenu.add(logFileItem);
+		
 		exitItem.setText("Exit");
 		exitItem.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -131,6 +149,10 @@ public class ChatWindow extends JFrame implements IClientContext {
 
 		pack();
 
+	}
+
+	public void logFileActionPerformed(ActionEvent evt) {
+				io.open(true);
 	}
 
 	private void connectItemActionPerformed(java.awt.event.ActionEvent evt) {
@@ -234,6 +256,7 @@ public class ChatWindow extends JFrame implements IClientContext {
 		connectItem.setEnabled(true);
 		disconnectItem.setEnabled(false);
 		enterBoardItem.setEnabled(false);
+		logFileItem.setEnabled(false);
 	}
 
 	/**
@@ -246,6 +269,8 @@ public class ChatWindow extends JFrame implements IClientContext {
 		connectItem.setEnabled(false);
 		disconnectItem.setEnabled(true);
 		enterBoardItem.setEnabled(true);
+		logFileItem.setEnabled(true);
+		
 	}
 
 	/**
@@ -395,6 +420,7 @@ public class ChatWindow extends JFrame implements IClientContext {
 			msg.setBoard(board);
 		}
 		serverPeer.send(msg);
+		io.append(username+": "+message+"\n");
 	}
 
 	/**
@@ -409,6 +435,7 @@ public class ChatWindow extends JFrame implements IClientContext {
 	@Override
 	public void displayChatMessage(String sender, String message) {
 		displayChatMessage(sender, message, "Public");
+		io.append("Public/"+sender+": "+message+"\n");
 	}
 
 	/**
